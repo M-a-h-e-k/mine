@@ -10,17 +10,17 @@
                 <!-- Chat Header -->
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1">
+                        <h5 class="mb-1" style="color: white !important;">
                             <i class="bi bi-chat-dots me-2"></i>Question Chat
                         </h5>
-                        <small class="opacity-75">
+                        <small class="opacity-75" style="color: rgba(255,255,255,0.9) !important;">
                             {{ chat.response.section }} | 
                             Status: 
                             <span class="badge 
                                 {% if chat.review_status == 'approved' %}bg-success
                                 {% elif chat.review_status == 'needs_revision' %}bg-warning
                                 {% elif chat.review_status == 'rejected' %}bg-danger
-                                {% else %}bg-secondary{% endif %}">
+                                {% else %}bg-secondary{% endif %}" style="color: white !important;">
                                 {{ chat.review_status.replace('_', ' ').title() }}
                             </span>
                         </small>
@@ -28,12 +28,12 @@
                     <div class="d-flex gap-2">
                         {% if session.role == 'lead' and chat.is_active and chat.review_status != 'approved' %}
                         <form method="post" action="{{ url_for('approve_from_chat', chat_id=chat.id) }}" class="d-inline">
-                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this question and close the chat?')">
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this question and close the chat?')" style="color: white !important;">
                                 <i class="bi bi-check-circle me-1"></i>Approve
                             </button>
                         </form>
                         {% endif %}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm" style="color: white !important;">
                             <i class="bi bi-arrow-left me-1"></i>Back
                         </a>
                     </div>
@@ -43,20 +43,20 @@
                 <div class="bg-light border-bottom p-3">
                     <div class="row">
                         <div class="col-md-8">
-                            <h6 class="text-primary mb-2">
+                            <h6 class="text-primary mb-2" style="color: var(--primary-color) !important;">
                                 <i class="bi bi-question-circle me-2"></i>Question:
                             </h6>
-                            <p class="mb-2">{{ chat.response.question }}</p>
+                            <p class="mb-2" style="color: #333 !important;">{{ chat.response.question }}</p>
                             <div class="mb-3">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div>
-                                        <strong>Client Answer:</strong> 
-                                        <span class="badge bg-info ms-1" id="currentAnswer">{{ chat.response.answer }}</span>
-                                        <small class="text-muted ms-2">(Last updated: {{ chat.response.updated_at.strftime('%Y-%m-%d %H:%M') }})</small>
+                                        <strong style="color: #333 !important;">Client Answer:</strong> 
+                                        <span class="badge bg-info ms-1" id="currentAnswer" style="color: white !important;">{{ chat.response.answer }}</span>
+                                        <small class="text-muted ms-2" style="color: #6b7280 !important;">(Last updated: {{ chat.response.updated_at.strftime('%Y-%m-%d %H:%M') }})</small>
                                     </div>
                                     {% if session.role == 'client' and chat.review_status == 'rejected' and chat.is_active %}
                                     <a href="{{ url_for('reselect_question', response_id=chat.response.id) }}" 
-                                       class="btn btn-danger btn-sm">
+                                       class="btn btn-danger btn-sm" style="color: white !important;">
                                         <i class="bi bi-arrow-repeat me-1"></i>Re-select Answer
                                     </a>
                                     {% endif %}
@@ -64,10 +64,10 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <small class="text-muted">
-                                <strong>Client:</strong> {{ chat.client.username }}<br>
-                                <strong>Lead:</strong> {{ chat.lead.username }}<br>
-                                <strong>Product:</strong> {{ chat.product.name }}
+                            <small class="text-muted" style="color: #6b7280 !important;">
+                                <strong style="color: #333 !important;">Client:</strong> {{ chat.client.username }}<br>
+                                <strong style="color: #333 !important;">Lead:</strong> {{ chat.lead.username }}<br>
+                                <strong style="color: #333 !important;">Product:</strong> {{ chat.product.name }}
                             </small>
                         </div>
                     </div>
@@ -90,24 +90,24 @@
                                     style="max-width: 70%;">
                                     
                                     {% if message.message_type == 'status_change' %}
-                                        <div class="fw-bold small mb-1" style="{% if message.sender_id == session.user_id %}color: #fff !important;{% else %}color: #333 !important; background-color: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 4px; display: inline-block;{% endif %}">
+                                        <div class="fw-bold small mb-1" style="{% if message.sender_id == session.user_id %}color: #fff !important;{% else %}color: #333 !important; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px; display: inline-block;{% endif %}">
                                             <i class="bi bi-info-circle me-1"></i>System Message
                                         </div>
                                     {% endif %}
                                     
-                                    <div class="message-content" style="{% if message.message_type == 'status_change' %}color: #fff !important; font-weight: 600; background-color: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px;{% elif message.sender_id != session.user_id %}color: #fff !important; font-weight: 500;{% else %}color: #fff !important; font-weight: 500;{% endif %}">{{ message.content }}</div>
+                                    <div class="message-content" style="{% if message.message_type == 'status_change' %}color: #333 !important; font-weight: 600; background-color: rgba(255,255,255,0.9); padding: 8px; border-radius: 4px;{% elif message.sender_id != session.user_id %}color: #333 !important; font-weight: 500;{% else %}color: #fff !important; font-weight: 500;{% endif %}">{{ message.content }}</div>
                                     
                                     {% if message.file_path %}
                                     <div class="mt-2">
                                         <a href="{{ url_for('download_chat_file', message_id=message.id) }}" 
-                                           class="btn btn-sm btn-outline-light text-decoration-none">
+                                           class="btn btn-sm btn-outline-light text-decoration-none" style="color: {% if message.sender_id == session.user_id %}white{% else %}#333{% endif %} !important;">
                                             <i class="bi bi-paperclip me-1"></i>{{ message.file_name or 'Download File' }}
                                         </a>
                                     </div>
                                     {% endif %}
                                     
-                                    <div class="message-meta mt-2 small opacity-75">
-                                        <strong>{{ message.sender.username }}</strong> • 
+                                    <div class="message-meta mt-2 small opacity-75" style="color: {% if message.sender_id == session.user_id %}rgba(255,255,255,0.8){% else %}#666{% endif %} !important;">
+                                        <strong style="color: inherit !important;">{{ message.sender.username }}</strong> • 
                                         {{ message.created_at.strftime('%Y-%m-%d %H:%M') }}
                                     </div>
                                 </div>
@@ -115,8 +115,8 @@
                             {% endfor %}
                         {% else %}
                             <div class="text-center text-muted py-5">
-                                <i class="bi bi-chat-dots display-4 mb-3"></i>
-                                <p>No messages yet. Start the conversation!</p>
+                                <i class="bi bi-chat-dots display-4 mb-3" style="color: #6b7280 !important;"></i>
+                                <p style="color: #6b7280 !important;">No messages yet. Start the conversation!</p>
                             </div>
                         {% endif %}
                     </div>
@@ -130,25 +130,25 @@
                         <div class="flex-grow-1">
                             <textarea name="message" class="form-control" rows="2" 
                                       placeholder="Type your message..." required
-                                      style="resize: none;" id="messageInput"></textarea>
+                                      style="resize: none; color: #333 !important; background: white !important;" id="messageInput"></textarea>
                         </div>
                         {% if session.role == 'client' %}
                         <div class="d-flex align-items-center">
                             <input type="file" name="evidence_file" id="evidenceFile" 
                                    class="form-control form-control-sm me-2" 
                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt,.zip"
-                                   style="width: 200px;">
-                            <small class="text-muted me-2" style="white-space: nowrap;">Evidence file (optional)</small>
+                                   style="width: 200px; color: #333 !important;">
+                            <small class="text-muted me-2" style="white-space: nowrap; color: #6b7280 !important;">Evidence file (optional)</small>
                         </div>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" style="color: white !important;">
                             <i class="bi bi-send me-1"></i>Send
                         </button>
                     </form>
                 </div>
                 {% else %}
                 <div class="card-footer bg-light text-center">
-                    <small class="text-muted">
+                    <small class="text-muted" style="color: #6b7280 !important;">
                         <i class="bi bi-lock me-1"></i>
                         This chat has been finalized and is no longer active.
                     </small>
@@ -160,6 +160,7 @@
 </div>
 
 <style>
+/* Enhanced Chat Interface Font Visibility */
 .message-bubble {
     animation: slideIn 0.3s ease-out;
 }
@@ -177,6 +178,7 @@
 
 .file-upload-wrapper input[type="file"] {
     font-size: 0.8rem;
+    color: #333 !important;
 }
 
 #chatMessages {
@@ -185,6 +187,55 @@
 
 .bg-gradient-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Enhanced font visibility for chat messages */
+.chat-messages .message-content,
+.chat-messages .message-text,
+.chat-messages .message-meta,
+.chat-messages .message-header {
+    color: #333 !important;
+}
+
+.message-bubble.text-end .bg-primary {
+    color: white !important;
+}
+
+.message-bubble.text-end .bg-primary * {
+    color: white !important;
+}
+
+.message-bubble.text-start .bg-light {
+    color: #333 !important;
+}
+
+.message-bubble.text-start .bg-light * {
+    color: #333 !important;
+}
+
+/* Form control enhanced visibility */
+.form-control,
+.form-select {
+    color: #333 !important;
+    background-color: white !important;
+    border: 1px solid #d1d5db !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    color: #333 !important;
+    background-color: white !important;
+}
+
+/* Button text visibility enhancement */
+.btn-outline-light {
+    color: white !important;
+    border-color: white !important;
+}
+
+.btn-outline-light:hover {
+    color: #333 !important;
+    background-color: white !important;
 }
 </style>
 

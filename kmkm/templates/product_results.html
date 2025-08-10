@@ -98,12 +98,12 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="dimensions-grid">
-                                <div class="row g-3">
+                                <div class="row g-3 justify-content-center">
                                     {% for dimension, score in dimension_scores.items() %}
-                                    <div class="col-md-2 col-sm-6">
+                                    <div class="col-lg-2 col-md-4 col-sm-6">
                                         {% set score_value = score if score is number else score.average_score if score.average_score is defined else 0 %}
                                         {% set score_level = score_value|round|int %}
-                                        <div class="dimension-label-item d-flex flex-column align-items-center justify-content-between p-3 rounded-3 border shadow-sm dimension-card-level-{{ score_level }}" style="height: 180px;">
+                                        <div class="dimension-label-item d-flex flex-column align-items-center justify-content-between p-3 rounded-3 border shadow-sm dimension-card-level-{{ score_level }}" style="height: 180px; background: white;">
                                             <div class="dimension-color level-{{ score_value|round|int }} mb-2 rounded-circle" style="width: 20px; height: 20px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"></div>
                                             <div class="text-center flex-grow-1 d-flex flex-column justify-content-center">
                                                 <h6 class="dimension-name fw-bold text-dark mb-2" style="font-size: 0.85rem; line-height: 1.2;">{{ dimension }}</h6>
