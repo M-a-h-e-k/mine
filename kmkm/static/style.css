@@ -1577,14 +1577,21 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     color: #6b7280;
 }
 
-/* Lead dashboard accordion styling */
+/* Lead dashboard accordion styling - Enhanced Font Visibility */
 .accordion-button {
     font-weight: 500;
+    color: #333 !important;
+    background-color: white !important;
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #dbeafe;
-    color: #1e40af;
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+}
+
+.accordion-button:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
 }
 
 .question-card {
@@ -2515,7 +2522,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     background: white;
 }
 
-/* WhatsApp-style Chat Interface */
+/* WhatsApp-style Chat Interface - Enhanced with Better Font Colors */
 .chat-container {
     max-width: 800px;
     margin: 0 auto;
@@ -2528,10 +2535,16 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 .chat-header {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     padding: 1.5rem;
-    color: white;
+    color: white !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.chat-header h5,
+.chat-header small,
+.chat-header .badge {
+    color: white !important;
 }
 
 .chat-avatar {
@@ -2543,6 +2556,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    color: white !important;
 }
 
 .chat-messages {
@@ -2585,16 +2599,19 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: relative;
+    color: #333 !important;
 }
 
 .reviewer-message .message-content {
     background: white;
     border-bottom-left-radius: 4px;
+    color: #333 !important;
 }
 
 .client-message .message-content {
     background: #dcf8c6;
     border-bottom-right-radius: 4px;
+    color: #333 !important;
 }
 
 .message-header {
@@ -2603,7 +2620,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 
 .message-time {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: #6b7280 !important;
 }
 
 .message-status {
@@ -2615,6 +2632,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
     font-weight: 500;
+    color: #333 !important;
 }
 
 .status-approved {
@@ -2640,6 +2658,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 .message-text {
     line-height: 1.4;
     margin: 0.5rem 0;
+    color: #333 !important;
 }
 
 .message-actions {
@@ -2680,13 +2699,17 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     min-height: 300px;
 }
 
-/* Dark dashboard headers */
+/* Dark dashboard headers - Enhanced Font Visibility */
 .dashboard-header {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
     color: white !important;
     border: none !important;
     position: relative;
     overflow: hidden;
+}
+
+.dashboard-header * {
+    color: white !important;
 }
 
 .dashboard-header::before {
@@ -2898,7 +2921,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 .question-text {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     margin-bottom: 1rem;
     line-height: 1.5;
 }
@@ -2945,7 +2968,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 .comment-value,
 .feedback-content {
     font-size: 0.875rem;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     line-height: 1.5;
 }
 
@@ -3587,6 +3610,355 @@ h1, h2, h3, h4, h5, h6 {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+    }
+}
+
+/* ========================================
+   COMPREHENSIVE FONT COLOR FIXES
+   Ensuring Proper Text Visibility
+======================================== */
+
+/* Global Text Color Enforcement */
+.card-body,
+.card-header,
+.card-footer,
+.message-content,
+.message-text,
+.question-text,
+.answer-value,
+.comment-value,
+.feedback-content {
+    color: var(--text-primary) !important;
+}
+
+/* Chat Interface Font Color Fixes */
+.chat-messages .message-content,
+.chat-messages .message-text,
+.chat-messages .message-meta,
+.chat-messages .message-header {
+    color: #333 !important;
+}
+
+.chat-messages .reviewer-message .message-content,
+.chat-messages .client-message .message-content {
+    color: #333 !important;
+}
+
+.chat-messages .message-meta strong {
+    color: #333 !important;
+}
+
+/* Dropdown and Collapse Content Font Fixes */
+.collapse .card-body,
+.collapse .product-dropdown-content,
+.collapse .dropdown-section,
+.collapse .info-card-professional,
+.collapse .question-card-professional {
+    color: var(--text-primary) !important;
+}
+
+/* Table Content Font Fixes */
+.table td,
+.table th,
+.table-responsive .table td,
+.table-responsive .table th {
+    color: var(--text-primary) !important;
+}
+
+/* Form Control Font Fixes */
+.form-control,
+.form-select,
+.form-label,
+.form-text,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    color: var(--text-primary) !important;
+}
+
+/* Modal Content Font Fixes */
+.modal-body,
+.modal-header,
+.modal-footer,
+.modal-title {
+    color: var(--text-primary) !important;
+}
+
+.modal-header {
+    color: white !important;
+}
+
+.modal-header * {
+    color: white !important;
+}
+
+/* Button Text Visibility */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-warning,
+.btn-danger,
+.btn-info,
+.btn-light,
+.btn-dark {
+    color: white !important;
+}
+
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-info {
+    color: var(--text-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-info:hover {
+    color: white !important;
+}
+
+/* Navigation Font Fixes */
+.nav-link,
+.nav-tabs .nav-link,
+.nav-pills .nav-link {
+    color: var(--text-primary) !important;
+}
+
+.nav-tabs .nav-link.active,
+.nav-pills .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+/* Alert Content Font Fixes */
+.alert,
+.alert-info,
+.alert-success,
+.alert-warning,
+.alert-danger {
+    color: #333 !important;
+}
+
+/* Badge Font Fixes */
+.badge,
+.status-badge,
+.status-badge-clean {
+    color: white !important;
+}
+
+.badge.bg-light,
+.badge.bg-secondary {
+    color: #333 !important;
+}
+
+/* List Group Font Fixes */
+.list-group-item {
+    color: var(--text-primary) !important;
+}
+
+.list-group-item.active {
+    color: white !important;
+}
+
+/* Specific Chat Message Font Fixes */
+.message-bubble .message-content,
+.message-bubble .message-text,
+.message-bubble .message-meta {
+    color: #333 !important;
+}
+
+.message-bubble.text-end .message-content {
+    color: white !important;
+}
+
+.message-bubble.text-start .message-content {
+    color: #333 !important;
+}
+
+/* Question Chat Specific Fixes */
+.question-chat .bg-light,
+.question-chat .bg-light p,
+.question-chat .bg-light small,
+.question-chat .bg-light strong {
+    color: #333 !important;
+}
+
+/* Dropdown Menu Font Fixes */
+.dropdown-menu,
+.dropdown-item {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+    color: white !important;
+}
+
+/* Product Results Font Fixes */
+.dimension-name,
+.dimension-score,
+.legend-item,
+.metric-label,
+.metric-value {
+    color: var(--text-primary) !important;
+}
+
+/* Status Indicator Font Fixes */
+.status-indicator,
+.status-indicator.approved,
+.status-indicator.revision,
+.status-indicator.rejected,
+.status-indicator.pending {
+    color: inherit !important;
+}
+
+/* Ensure all text in cards is visible */
+.card * {
+    color: inherit;
+}
+
+.card-header * {
+    color: white !important;
+}
+
+.card-body * {
+    color: var(--text-primary) !important;
+}
+
+/* Override any problematic white text on light backgrounds */
+.bg-light *,
+.bg-white *,
+.card-body *,
+.table-responsive * {
+    color: var(--text-primary) !important;
+}
+
+/* Exception for elements that should remain white */
+.btn-primary *,
+.btn-success *,
+.btn-danger *,
+.btn-warning *,
+.btn-info *,
+.btn-dark *,
+.bg-primary *,
+.bg-success *,
+.bg-danger *,
+.bg-warning *,
+.bg-info *,
+.bg-dark *,
+.navbar *,
+.dashboard-header *,
+.chat-header * {
+    color: white !important;
+}
+
+/* Specific fixes for status badges */
+.status-badge-clean.in-progress,
+.status-badge-clean.questions-done,
+.status-badge-clean.under-review,
+.status-badge-clean.review-done,
+.status-badge-clean.completed {
+    color: inherit !important;
+}
+
+.status-badge-clean.needs_client_response {
+    color: white !important;
+}
+
+/* Ensure proper contrast in all interactive elements */
+button,
+.btn,
+a.btn {
+    color: white !important;
+}
+
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-info,
+.btn-outline-light,
+.btn-outline-dark {
+    color: var(--text-primary) !important;
+}
+
+/* Text input visibility */
+input,
+textarea,
+select {
+    color: var(--text-primary) !important;
+    background-color: white !important;
+}
+
+/* Placeholder text visibility */
+::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7;
+}
+
+/* Ensure all links are visible */
+a {
+    color: var(--primary-color) !important;
+}
+
+a:hover {
+    color: var(--primary-dark) !important;
+}
+
+/* White text exceptions for dark backgrounds */
+.bg-dark a,
+.bg-primary a,
+.bg-success a,
+.bg-danger a,
+.bg-warning a,
+.bg-info a,
+.navbar a,
+.dashboard-header a,
+.chat-header a {
+    color: white !important;
+}
+
+/* Dropdown state font color fixes */
+.dropdown-toggle-btn,
+.dropdown-toggle-btn *,
+.collapse .dropdown-section-title,
+.collapse .dropdown-section-title * {
+    color: inherit !important;
+}
+
+.product-dropdown .dropdown-section-title {
+    color: var(--primary-color) !important;
+}
+
+/* Responsive font color fixes */
+@media (max-width: 768px) {
+    .chat-messages,
+    .chat-messages *,
+    .message-content,
+    .message-content *,
+    .question-text,
+    .question-text * {
+        color: #333 !important;
+    }
+    
+    .message-bubble.text-end .message-content,
+    .message-bubble.text-end .message-content * {
+        color: white !important;
+    }
+    
+    .chat-header,
+    .chat-header *,
+    .dashboard-header,
+    .dashboard-header *,
+    .navbar,
+    .navbar * {
+        color: white !important;
     }
 }
 

@@ -3,8 +3,8 @@
 {% block head %}
 <style>
 /* ========================================
-   MODERN CLIENT DETAILS PAGE DESIGN
-   Matching Current Webapp Theme
+   ENHANCED CLIENT DETAILS PAGE DESIGN
+   Accorian-inspired Professional Theme
 ======================================== */
 
 /* Reset and Base Styles */
@@ -13,11 +13,11 @@ body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* Main Container - Modern Design */
+/* Main Container - Enhanced Modern Design */
 .client-details-container {
     background: var(--light-bg);
     min-height: calc(100vh - var(--navbar-height));
-    padding: 1.5rem 0;
+    padding: 2rem 0;
 }
 
 .content-container {
@@ -28,46 +28,48 @@ body {
 
 @media (min-width: 768px) {
     .content-container {
-        padding: 0 1.5rem;
+        padding: 0 2rem;
     }
 }
 
-/* Navigation Breadcrumb - Modern Style */
+/* Navigation Breadcrumb - Enhanced Style */
 .nav-breadcrumb {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .breadcrumb-btn {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     border: none;
     color: white;
-    border-radius: var(--border-radius);
-    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.5rem;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     font-size: var(--font-size-sm);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    gap: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .breadcrumb-btn:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
     color: white;
     text-decoration: none;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
 }
 
-/* Client Header Card - Professional Modern */
+/* Client Header Card - Professional Enhanced */
 .client-header-card {
-    background: var(--card-bg);
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--card-shadow-lg);
-    margin-bottom: 2rem;
-    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
+    border: 1px solid var(--primary-lighter);
     overflow: hidden;
     position: relative;
 }
@@ -78,84 +80,89 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    height: 6px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light), var(--navy-dark));
 }
 
 .client-header-content {
-    padding: 2rem;
+    padding: 3rem;
 }
 
 .client-avatar-large {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: white;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    margin-bottom: 2rem;
+    box-shadow: 0 12px 35px rgba(37, 99, 235, 0.4);
     position: relative;
+    border: 4px solid white;
 }
 
 .client-avatar-large::before {
     content: '';
     position: absolute;
-    inset: -2px;
-    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    inset: -6px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color), var(--navy-dark));
     border-radius: var(--border-radius-lg);
     z-index: -1;
     opacity: 0.3;
 }
 
 .client-name {
-    font-size: 2.25rem;
-    font-weight: 700;
+    font-size: 3rem;
+    font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .client-email {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    font-weight: 500;
 }
 
 .client-org {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    font-weight: 500;
 }
 
 .client-org i {
     color: var(--primary-color);
+    font-size: 1.2em;
 }
 
 .status-badge-professional {
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 1.75rem;
     border-radius: 50px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: var(--font-size-sm);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: var(--card-shadow);
-    border: 2px solid transparent;
+    letter-spacing: 0.75px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
 }
 
 .status-active {
@@ -172,38 +179,39 @@ body {
 
 .client-meta-info {
     display: flex;
-    gap: 2rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--primary-lighter);
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 3px solid var(--primary-lighter);
     flex-wrap: wrap;
 }
 
 .meta-info-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    background: var(--primary-lightest);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--primary-lighter);
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary-lightest), white);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--primary-lighter);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
 .meta-info-item i {
     color: var(--primary-color);
-    font-size: 1.1em;
+    font-size: 1.3em;
 }
 
-/* Section Header - Modern Professional */
+/* Section Header - Enhanced Professional */
 .section-header-professional {
-    background: var(--card-bg);
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
-    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--primary-lighter);
+    margin-bottom: 3rem;
     overflow: hidden;
     position: relative;
 }
@@ -214,44 +222,45 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
+    height: 4px;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color), var(--primary-light));
 }
 
 .section-header-content {
-    padding: 2rem;
+    padding: 2.5rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .section-icon-professional {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
     border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.5rem;
-    box-shadow: 0 8px 25px rgba(30, 41, 59, 0.3);
+    font-size: 2rem;
+    box-shadow: 0 12px 35px rgba(30, 41, 59, 0.4);
     position: relative;
+    border: 4px solid white;
 }
 
 .section-icon-professional::before {
     content: '';
     position: absolute;
-    inset: -2px;
+    inset: -6px;
     background: linear-gradient(135deg, var(--primary-color), var(--navy-dark));
     border-radius: var(--border-radius-lg);
     z-index: -1;
-    opacity: 0.2;
+    opacity: 0.3;
 }
 
 .section-title-professional {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     color: var(--text-primary);
     margin: 0;
     background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
@@ -261,38 +270,39 @@ body {
 }
 
 .section-subtitle {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     color: var(--text-secondary);
-    margin: 0.25rem 0 0 0;
-    font-weight: 400;
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
 }
 
 .products-count-badge {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     color: white;
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 1.75rem;
     border-radius: 50px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: var(--font-size-sm);
     margin-left: auto;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
+    border: 3px solid white;
 }
 
-/* Product Cards - Modern Design */
+/* Product Cards - Enhanced Modern Design */
 .products-grid-professional {
     display: grid;
-    gap: 2rem;
+    gap: 2.5rem;
 }
 
 .product-card-professional {
-    background: var(--card-bg);
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--primary-lighter);
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
@@ -302,22 +312,22 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    opacity: 0.8;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light), var(--navy-dark));
+    opacity: 0.9;
 }
 
 .product-card-professional:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--card-shadow-hover);
-    border-color: var(--primary-light);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
 }
 
 /* Product Header - Enhanced */
 .product-header-professional {
-    background: linear-gradient(135deg, var(--subtle-gradient));
-    padding: 2rem;
-    border-bottom: 2px solid var(--primary-lighter);
+    background: linear-gradient(135deg, var(--subtle-gradient), white);
+    padding: 2.5rem;
+    border-bottom: 3px solid var(--primary-lighter);
     position: relative;
 }
 
@@ -325,8 +335,8 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    gap: 1rem;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
 }
 
 .product-info-section {
@@ -338,32 +348,33 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .product-name-professional {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     flex: 1;
 }
 
 .product-icon-professional {
-    width: 48px;
-    height: 48px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.25rem;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
     flex-shrink: 0;
+    border: 3px solid white;
 }
 
 .dropdown-toggle-btn {
@@ -371,30 +382,31 @@ body {
     border: none;
     color: white;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    border: 3px solid white;
 }
 
 .dropdown-toggle-btn:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5);
 }
 
 .dropdown-toggle-btn:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
 }
 
 .dropdown-toggle-btn i {
-    font-size: 1rem;
+    font-size: 1.2rem;
     transition: transform 0.3s ease;
 }
 
@@ -404,41 +416,43 @@ body {
 
 .product-dates-info {
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem;
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
     flex-wrap: wrap;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 }
 
 .date-info-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--lighter-bg);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--card-border);
-    font-weight: 500;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, var(--lighter-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--primary-lighter);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
 .date-info-item i {
     color: var(--primary-color);
+    font-size: 1.2em;
 }
 
-/* Status Badges - Modern Design */
+/* Status Badges - Enhanced Modern Design */
 .status-badge-modern {
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 1.5rem;
     border-radius: 50px;
-    font-weight: 600;
-    font-size: var(--font-size-xs);
+    font-weight: 700;
+    font-size: var(--font-size-sm);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: var(--card-shadow);
-    border: 2px solid transparent;
+    letter-spacing: 0.75px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
 }
 
 .status-completed { 
@@ -465,22 +479,22 @@ body {
     border-color: var(--secondary-color);
 }
 
-/* Dropdown Content - Modern Style */
+/* Dropdown Content - Enhanced Modern Style */
 .product-dropdown {
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--border-radius);
-    margin-top: 1rem;
-    box-shadow: var(--card-shadow);
+    border: 1px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 .product-dropdown-content {
-    padding: 2rem;
+    padding: 2.5rem;
 }
 
 .dropdown-section {
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
 }
 
 .dropdown-section:last-child {
@@ -488,36 +502,36 @@ body {
 }
 
 .dropdown-section-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--primary-lighter);
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-lighter);
 }
 
 .dropdown-section-title i {
-    font-size: 1.1em;
+    font-size: 1.3em;
     color: var(--primary-color);
 }
 
 /* Info Cards Grid - Enhanced */
 .info-cards-grid-professional {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .info-card-professional {
     background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
-    border: 1px solid var(--primary-lighter);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
@@ -527,68 +541,69 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 6px;
     height: 100%;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
 }
 
 .info-card-professional:hover {
     background: var(--card-bg);
-    transform: translateY(-2px);
-    box-shadow: var(--card-shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
     border-color: var(--primary-color);
 }
 
 .info-card-header-professional {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .info-card-icon-professional {
-    width: 48px;
-    height: 48px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.25rem;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    border: 3px solid white;
 }
 
 .info-card-title-professional {
-    font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
     margin: 0;
 }
 
 .info-card-value-professional {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
+    font-size: var(--font-size-xl);
+    font-weight: 700;
     color: var(--text-primary);
     margin: 0;
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
 /* Criticality Badges - Enhanced */
 .criticality-badge-professional {
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 1.5rem;
     border-radius: 50px;
     font-weight: 700;
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    box-shadow: var(--card-shadow);
-    border: 2px solid transparent;
+    gap: 0.75rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
 }
 
 .criticality-critical { 
@@ -618,16 +633,16 @@ body {
 /* Questions Grid - Enhanced Modern Design */
 .questions-grid-professional {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 2rem;
 }
 
 .question-card-professional {
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--card-border);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
@@ -637,27 +652,27 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 6px;
     height: 100%;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
 }
 
 .question-card-professional:hover {
-    border-color: var(--primary-light);
-    box-shadow: var(--card-shadow-lg);
-    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
 }
 
 .question-header-professional {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .question-number-professional {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     border-radius: 50%;
     display: flex;
@@ -665,14 +680,15 @@ body {
     justify-content: center;
     color: white;
     font-weight: 700;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     flex-shrink: 0;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    border: 3px solid white;
 }
 
 .question-text-professional {
-    font-size: var(--font-size-base);
-    font-weight: 500;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
     color: var(--text-primary);
     line-height: 1.6;
     margin: 0;
@@ -680,49 +696,51 @@ body {
 
 .question-answer-professional {
     background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
-    border: 1px solid var(--primary-lighter);
-    border-radius: var(--border-radius);
-    padding: 1rem 1.25rem;
-    font-size: var(--font-size-sm);
+    border: 2px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem 1.5rem;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--primary-dark);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
-    margin-top: 0.75rem;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+    margin-top: 1rem;
 }
 
 .question-answer-professional i {
     color: var(--primary-color);
+    font-size: 1.2em;
 }
 
-/* Action Section - Modern CTA */
+/* Action Section - Enhanced Modern CTA */
 .action-section-professional {
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--primary-lighter);
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 3px solid var(--primary-lighter);
     text-align: center;
 }
 
 .view-results-btn-professional {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     border: none;
-    border-radius: var(--border-radius);
-    padding: 1.25rem 2.5rem;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem 3rem;
     color: white;
     font-weight: 700;
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    gap: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.4);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
     position: relative;
     overflow: hidden;
+    border: 3px solid white;
 }
 
 .view-results-btn-professional::before {
@@ -732,8 +750,8 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
 }
 
 .view-results-btn-professional:hover::before {
@@ -741,20 +759,20 @@ body {
 }
 
 .view-results-btn-professional:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 50px rgba(37, 99, 235, 0.6);
     color: white;
     background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
 }
 
-/* Empty State - Modern Design */
+/* Empty State - Enhanced Modern Design */
 .empty-state-professional {
-    background: var(--card-bg);
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
     border-radius: var(--border-radius-lg);
-    border: 1px solid var(--card-border);
-    padding: 4rem 2rem;
+    border: 2px solid var(--primary-lighter);
+    padding: 5rem 3rem;
     text-align: center;
-    box-shadow: var(--card-shadow-lg);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
 }
@@ -765,29 +783,30 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 6px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
 }
 
 .empty-icon-professional {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
     border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 2rem;
+    margin: 0 auto 2.5rem;
     color: var(--text-muted);
-    font-size: 3rem;
-    border: 2px solid var(--primary-lighter);
+    font-size: 4rem;
+    border: 3px solid var(--primary-lighter);
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
 }
 
 .empty-title-professional {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -796,19 +815,20 @@ body {
 
 .empty-description-professional {
     color: var(--text-secondary);
-    font-size: var(--font-size-lg);
-    margin-bottom: 2rem;
-    max-width: 500px;
+    font-size: var(--font-size-xl);
+    margin-bottom: 3rem;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-weight: 500;
 }
 
 /* Enhanced Animations */
 @keyframes slideInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
@@ -819,7 +839,7 @@ body {
 @keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(0.9);
     }
     to {
         opacity: 1;
@@ -828,20 +848,20 @@ body {
 }
 
 .product-card-professional {
-    animation: slideInUp 0.6s ease forwards;
+    animation: slideInUp 0.8s ease forwards;
 }
 
-.product-card-professional:nth-child(2) { animation-delay: 0.1s; }
-.product-card-professional:nth-child(3) { animation-delay: 0.2s; }
-.product-card-professional:nth-child(4) { animation-delay: 0.3s; }
+.product-card-professional:nth-child(2) { animation-delay: 0.15s; }
+.product-card-professional:nth-child(3) { animation-delay: 0.3s; }
+.product-card-professional:nth-child(4) { animation-delay: 0.45s; }
 
 .client-header-card {
-    animation: fadeInScale 0.5s ease forwards;
+    animation: fadeInScale 0.7s ease forwards;
 }
 
 .section-header-professional {
-    animation: slideInUp 0.6s ease forwards;
-    animation-delay: 0.2s;
+    animation: slideInUp 0.8s ease forwards;
+    animation-delay: 0.3s;
 }
 
 /* Responsive Design - Enhanced */
@@ -851,69 +871,69 @@ body {
     }
     
     .client-header-content {
-        padding: 1.5rem;
+        padding: 2rem;
     }
     
     .client-name {
-        font-size: 1.75rem;
+        font-size: 2.25rem;
     }
     
     .client-avatar-large {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .section-header-content {
+        padding: 2rem;
+        gap: 1.5rem;
+    }
+    
+    .section-icon-professional {
         width: 60px;
         height: 60px;
         font-size: 1.5rem;
     }
     
-    .section-header-content {
-        padding: 1.5rem;
-        gap: 1rem;
+    .section-title-professional {
+        font-size: 1.75rem;
     }
     
-    .section-icon-professional {
+    .status-badge-professional {
+        position: static;
+        margin-top: 1.5rem;
+        align-self: flex-start;
+        padding: 0.75rem 1.25rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .client-meta-info {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .meta-info-item {
+        padding: 0.75rem 1rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .product-header-professional {
+        padding: 2rem;
+    }
+    
+    .product-name-professional {
+        font-size: 1.5rem;
+    }
+    
+    .product-icon-professional {
         width: 50px;
         height: 50px;
         font-size: 1.25rem;
     }
     
-    .section-title-professional {
-        font-size: 1.5rem;
-    }
-    
-    .status-badge-professional {
-        position: static;
-        margin-top: 1rem;
-        align-self: flex-start;
-        padding: 0.5rem 1rem;
-        font-size: var(--font-size-xs);
-    }
-    
-    .client-meta-info {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .meta-info-item {
-        padding: 0.5rem 0.75rem;
-        font-size: var(--font-size-xs);
-    }
-    
-    .product-header-professional {
-        padding: 1.5rem;
-    }
-    
-    .product-name-professional {
-        font-size: 1.25rem;
-    }
-    
-    .product-icon-professional {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-    }
-    
     .dropdown-toggle-btn {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
     }
     
     .info-cards-grid-professional {
@@ -926,42 +946,42 @@ body {
     
     .product-title-section {
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.5rem;
         align-items: flex-start;
     }
     
     .product-dates-info {
-        gap: 1rem;
+        gap: 1.5rem;
     }
     
     .date-info-item {
-        padding: 0.4rem 0.75rem;
-        font-size: var(--font-size-xs);
-    }
-    
-    .view-results-btn-professional {
-        padding: 1rem 2rem;
+        padding: 0.6rem 1rem;
         font-size: var(--font-size-sm);
     }
     
-    .empty-title-professional {
-        font-size: 1.5rem;
-    }
-    
-    .empty-description-professional {
+    .view-results-btn-professional {
+        padding: 1.25rem 2.5rem;
         font-size: var(--font-size-base);
     }
     
+    .empty-title-professional {
+        font-size: 2rem;
+    }
+    
+    .empty-description-professional {
+        font-size: var(--font-size-lg);
+    }
+    
     .empty-icon-professional {
-        width: 100px;
-        height: 100px;
-        font-size: 2.5rem;
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
     }
 }
 
 @media (max-width: 480px) {
     .client-details-container {
-        padding: 1rem 0;
+        padding: 1.5rem 0;
     }
     
     .content-container {
@@ -969,31 +989,31 @@ body {
     }
     
     .client-header-content {
-        padding: 1.25rem;
+        padding: 1.5rem;
     }
     
     .section-header-content {
-        padding: 1.25rem;
+        padding: 1.5rem;
         flex-direction: column;
         text-align: center;
-        gap: 1rem;
+        gap: 1.5rem;
     }
     
     .products-count-badge {
         margin-left: 0;
-        margin-top: 0.5rem;
+        margin-top: 1rem;
     }
     
     .product-header-professional {
-        padding: 1.25rem;
-    }
-    
-    .product-dropdown-content {
         padding: 1.5rem;
     }
     
+    .product-dropdown-content {
+        padding: 2rem;
+    }
+    
     .dropdown-section-title {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-xl);
     }
 }
 </style>
@@ -1010,31 +1030,34 @@ body {
             </a>
         </div>
 
-        <!-- Client Header Card -->
+        <!-- Enhanced Client Header Card -->
         <div class="client-header-card">
             <div class="client-header-content">
-    <div class="row align-items-center">
-        <div class="col-md-8">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
                         <div class="client-avatar-large">
                             {{ client.username[0].upper() if client.username else 'U' }}
                         </div>
                         <h1 class="client-name">{{ client.username }}</h1>
-                        <p class="client-email">{{ client.email }}</p>
+                        <p class="client-email">
+                            <i class="bi bi-envelope-fill"></i>
+                            {{ client.email }}
+                        </p>
                         <p class="client-org">
                             <i class="bi bi-building"></i>
                             {{ client.organization or 'No Organization Specified' }}
                         </p>
                         <div class="client-meta-info">
                             <div class="meta-info-item">
-                                <i class="bi bi-clock"></i>
+                                <i class="bi bi-clock-history"></i>
                                 Last Login: {{ client.last_login.strftime('%B %d, %Y at %I:%M %p') if client.last_login else 'Never logged in' }}
-                </div>
+                            </div>
                             <div class="meta-info-item">
                                 <i class="bi bi-calendar-plus"></i>
                                 Member Since: {{ client.created_at.strftime('%B %d, %Y') if client.created_at else 'Unknown' }}
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-4 text-end">
                         <div class="status-badge-professional {% if client.is_active %}status-active{% else %}status-inactive{% endif %}">
                             <i class="bi bi-{% if client.is_active %}check-circle-fill{% else %}pause-circle-fill{% endif %}"></i>
@@ -1045,7 +1068,7 @@ body {
             </div>
         </div>
 
-        <!-- Section Header -->
+        <!-- Enhanced Section Header -->
         <div class="section-header-professional">
             <div class="section-header-content">
                 <div class="section-icon-professional">
@@ -1061,20 +1084,20 @@ body {
             </div>
         </div>
         
-        <!-- Products Grid -->
+        <!-- Enhanced Products Grid -->
         <div class="products-grid-professional">
             {% if client.products %}
-                                {% for product in client.products %}
+                {% for product in client.products %}
                 <div class="product-card-professional">
-                    <!-- Product Header with Dropdown Toggle -->
+                    <!-- Enhanced Product Header with Dropdown Toggle -->
                     <div class="product-header-professional">
                         <div class="product-title-section">
                             <div class="product-info-section">
                                 <div class="product-name-with-dropdown">
                                     <h3 class="product-name-professional">
                                         <div class="product-icon-professional">
-                                            <i class="bi bi-app-indicator"></i>
-                </div>
+                                            <i class="bi bi-shield-shaded"></i>
+                                        </div>
                                         {{ product.application_name or product.name }}
                                     </h3>
                                     <button class="dropdown-toggle-btn" type="button" data-bs-toggle="collapse" 
@@ -1082,20 +1105,20 @@ body {
                                             aria-controls="productDetails{{ product.id }}">
                                         <i class="bi bi-chevron-down"></i>
                                     </button>
-                </div>
+                                </div>
                                 <div class="product-dates-info">
                                     <div class="date-info-item">
-                                        <i class="bi bi-calendar"></i>
+                                        <i class="bi bi-calendar-plus"></i>
                                         Created {{ product.created_at.strftime('%B %d, %Y') if product.created_at else 'Unknown' }}
-                </div>
+                                    </div>
                                     {% if product.updated_at and product.updated_at != product.created_at %}
                                     <div class="date-info-item">
                                         <i class="bi bi-clock-history"></i>
                                         Updated {{ product.updated_at.strftime('%B %d, %Y') if product.updated_at else 'Unknown' }}
-            </div>
+                                    </div>
                                     {% endif %}
-                </div>
-                </div>
+                                </div>
+                            </div>
                             <div>
                                 <span class="status-badge-modern status-{{ product.status.replace('_', '-') }}">
                                     <i class="bi bi-{% if product.status == 'completed' %}check-circle-fill
@@ -1104,18 +1127,18 @@ body {
                                         {% else %}clock-fill{% endif %}"></i>
                                     {{ product.status.replace('_', ' ').title() }}
                                 </span>
-                </div>
-                </div>
-            </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- Collapsible Product Details -->
+                    <!-- Enhanced Collapsible Product Details -->
                     <div class="collapse" id="productDetails{{ product.id }}">
                         <div class="product-dropdown">
                             <div class="product-dropdown-content">
-                                <!-- Product Details Section -->
+                                <!-- Enhanced Product Details Section -->
                                 <div class="dropdown-section">
                                     <h5 class="dropdown-section-title">
-                                        <i class="bi bi-info-circle"></i>
+                                        <i class="bi bi-info-circle-fill"></i>
                                         Product Details
                                     </h5>
                                     <div class="info-cards-grid-professional">
@@ -1123,7 +1146,7 @@ body {
                                         <div class="info-card-professional">
                                             <div class="info-card-header-professional">
                                                 <div class="info-card-icon-professional">
-                                                    <i class="bi bi-person-badge"></i>
+                                                    <i class="bi bi-person-badge-fill"></i>
                                                 </div>
                                                 <h6 class="info-card-title-professional">Product Owner</h6>
                                             </div>
@@ -1136,7 +1159,7 @@ body {
                                             <div class="info-card-header-professional">
                                                 <div class="info-card-icon-professional">
                                                     <i class="bi bi-exclamation-triangle-fill"></i>
-                        </div>
+                                                </div>
                                                 <h6 class="info-card-title-professional">Business Criticality</h6>
                                             </div>
                                             <p class="info-card-value-professional">
@@ -1160,7 +1183,7 @@ body {
                                             </div>
                                             <p class="info-card-value-professional">{{ product.q3_other if product.q3_category == 'Other' else product.q3_category }}</p>
                                         </div>
-                                            {% endif %}
+                                        {% endif %}
 
                                         {% if product.q5_category %}
                                         <div class="info-card-professional">
@@ -1169,14 +1192,14 @@ body {
                                                     <i class="bi bi-cloud-fill"></i>
                                                 </div>
                                                 <h6 class="info-card-title-professional">Deployment Platform</h6>
-                        </div>
+                                            </div>
                                             <p class="info-card-value-professional">{{ product.q5_other if product.q5_category == 'Other' else product.q5_category }}</p>
-                        </div>
-                    {% endif %}
-                </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
 
-                                <!-- Application Security Profile Section -->
+                                <!-- Enhanced Application Security Profile Section -->
                                 <div class="dropdown-section">
                                     <h5 class="dropdown-section-title">
                                         <i class="bi bi-shield-shaded"></i>
@@ -1206,16 +1229,16 @@ body {
                                                 <div class="question-answer-professional">
                                                     <i class="bi bi-arrow-right-circle-fill"></i>
                                                     {{ other if category == 'Other' and other else category }}
-                            </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
-                        </div>
-                </div>
                 
-                                <!-- Action Section -->
+                                <!-- Enhanced Action Section -->
                                 <div class="dropdown-section">
-                                    <div class="text-center">
+                                    <div class="action-section-professional">
                                         <a href="{{ url_for('admin_product_results', product_id=product.id) }}" class="view-results-btn-professional">
                                             <i class="bi bi-bar-chart-line-fill"></i>
                                             View Security Assessment Results
@@ -1224,50 +1247,73 @@ body {
                                 </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
                 {% endfor %}
 
             {% else %}
-                <!-- Empty State -->
+                <!-- Enhanced Empty State -->
                 <div class="empty-state-professional">
                     <div class="empty-icon-professional">
                         <i class="bi bi-inbox"></i>
-            </div>
+                    </div>
                     <h3 class="empty-title-professional">No Products Found</h3>
                     <p class="empty-description-professional">
                         This client hasn't created any security assessment products yet. 
-                        They can start by creating their first product assessment.
+                        They can start by creating their first product assessment to begin their security journey.
                     </p>
                     <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
                         <i class="bi bi-arrow-left"></i>
                         Back to Client Management
                     </a>
-            </div>
+                </div>
             {% endif %}
         </div>
     </div>
-    </div>
+</div>
 
 <script>
-// Add dropdown toggle functionality
+// Enhanced dropdown toggle functionality with state persistence
 document.addEventListener('DOMContentLoaded', function() {
     // Handle dropdown button rotation and functionality
     const dropdownBtns = document.querySelectorAll('.dropdown-toggle-btn');
+    
+    // Restore dropdown states from localStorage
+    const savedStates = JSON.parse(localStorage.getItem('dropdownStates') || '{}');
     
     dropdownBtns.forEach(btn => {
         // Handle the collapse events
         const targetId = btn.getAttribute('data-bs-target');
         const targetElement = document.querySelector(targetId);
+        const productId = targetId.replace('#productDetails', '');
         
         if (targetElement) {
+            // Restore saved state
+            if (savedStates[productId] === 'open') {
+                targetElement.classList.add('show');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+            
             targetElement.addEventListener('show.bs.collapse', function() {
                 btn.setAttribute('aria-expanded', 'true');
+                // Save state
+                savedStates[productId] = 'open';
+                localStorage.setItem('dropdownStates', JSON.stringify(savedStates));
             });
             
             targetElement.addEventListener('hide.bs.collapse', function() {
                 btn.setAttribute('aria-expanded', 'false');
+                // Save state
+                savedStates[productId] = 'closed';
+                localStorage.setItem('dropdownStates', JSON.stringify(savedStates));
             });
+        }
+    });
+    
+    // Initialize all dropdowns as closed by default (keeping them closed on first load)
+    dropdownBtns.forEach(btn => {
+        if (btn.getAttribute('aria-expanded') !== 'true') {
+            btn.setAttribute('aria-expanded', 'false');
         }
     });
 });
