@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Client Management - Admin{% endblock %}
+
+{% block head %}
+<style>
+.client-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.client-row {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.client-row:hover {
+    background-color: #f8f9fa;
+}
+
+.client-row.expanded {
+    background-color: #e3f2fd;
+}
+
+.products-section {
+    display: none;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+.products-section.show {
+    display: table-row;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin: 8px 0;
+    transition: all 0.2s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+.product-header {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 7px 7px 0 0;
+}
+
+.product-content {
+    padding: 15px;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.expand-icon {
+    transition: transform 0.2s ease;
+}
+
+.expand-icon.rotated {
+    transform: rotate(90deg);
+}
+
+.client-stats {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #495057;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #6c757d;
+    text-transform: uppercase;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.product-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.search-filter-bar {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .client-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- Page Header -->
+    <div class="dashboard-header text-center mb-4">
+        <h1 class="display-6 fw-bold">
+            <i class="bi bi-people me-3"></i>Client Management
+        </h1>
+        <p class="lead mb-0">Manage clients and their security assessment products</p>
+    </div>
+
+
+
+    <!-- Clients Table -->
+    <div class="card shadow">
+        <div class="card-header bg-gradient-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>Clients Overview
+                </h5>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('invite_client') }}" class="btn btn-light btn-sm">
+                        <i class="bi bi-person-plus me-1"></i>Invite Client
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover client-table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>Client</th>
+                            <th>Organization</th>
+                            <th>Products</th>
+                            <th>Progress</th>
+                            <th>Last Activity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in clients %}
+                        <tr class="client-row" data-client-id="{{ client.id }}">
+                            <td></td>
+                            <td>
+                                <div>
+                                    <div class="fw-bold">{{ client.username }}</div>
+                                    <small class="text-muted">{{ client.email }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark">{{ client.organization or 'N/A' }}</span>
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <div class="stat-value">{{ client.products|length }}</div>
+                                    <div class="stat-label">
+                                        {% if client.products %}
+                                            {% for product in client.products[:3] %}
+                                                <div class="small text-muted">{{ product.name }}</div>
+                                            {% endfor %}
+                                            {% if client.products|length > 3 %}
+                                                <div class="small text-muted">+{{ client.products|length - 3 }} more</div>
+                                            {% endif %}
+                                        {% else %}
+                                            No products
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% set completed = client.products|selectattr('status', 'in', ['completed', 'review_done'])|list|length %}
+                                {% set in_progress = client.products|selectattr('status', 'in', ['in_progress', 'questions_done', 'under_review', 'needs_client_response'])|list|length %}
+                                <div class="text-center">
+                                    <div class="mb-1"><span class="badge bg-success px-2 py-1">{{ completed }}</span> <small class="text-muted">Completed</small></div>
+                                    <div><span class="badge bg-warning px-2 py-1">{{ in_progress }}</span> <small class="text-muted">In Progress</small></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if client.last_login %}
+                                    {{ client.last_login.strftime('%m/%d/%Y') }}
+                                {% else %}
+                                    <span class="text-muted">Never</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if client.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td onclick="event.stopPropagation();">
+                                <a href="{{ url_for('admin_client_details', client_id=client.id) }}" 
+                                   class="btn btn-primary btn-sm" 
+                                   title="View Details">
+                                    <i class="bi bi-eye me-1"></i>View Details
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('manage_users') }}" class="btn btn-outline-secondary me-2">
+            <i class="bi bi-people me-2"></i>All Users
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+            <i class="bi bi-house me-2"></i>Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+// Client management functionality simplified
+
+// Action functions
+function viewClientDetails(clientId) {
+    // Could open a modal or redirect to detailed view
+    window.location.href = `/admin/client/${clientId}/details`;
+}
+
+function assignReviewer(clientId) {
+    // Open modal for reviewer assignment
+    alert('Reviewer assignment functionality - to be implemented');
+}
+
+function editClient(clientId) {
+    // Open edit modal or redirect to edit page
+    alert('Client editing functionality - to be implemented');
+}
+
+
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Client Management page loaded');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,1275 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+/* ========================================
+   MODERN CLIENT DETAILS PAGE DESIGN
+   Matching Current Webapp Theme
+======================================== */
+
+/* Reset and Base Styles */
+body {
+    background: var(--light-bg) !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Main Container - Modern Design */
+.client-details-container {
+    background: var(--light-bg);
+    min-height: calc(100vh - var(--navbar-height));
+    padding: 1.5rem 0;
+}
+
+.content-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .content-container {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Navigation Breadcrumb - Modern Style */
+.nav-breadcrumb {
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1.25rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.breadcrumb-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Client Header Card - Professional Modern */
+.client-header-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow-lg);
+    margin-bottom: 2rem;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    position: relative;
+}
+
+.client-header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.client-header-content {
+    padding: 2rem;
+}
+
+.client-avatar-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    position: relative;
+}
+
+.client-avatar-large::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    border-radius: var(--border-radius-lg);
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.client-name {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.client-email {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-org {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-org i {
+    color: var(--primary-color);
+}
+
+.status-badge-professional {
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--card-shadow);
+    border: 2px solid transparent;
+}
+
+.status-active {
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+.client-meta-info {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--primary-lighter);
+    flex-wrap: wrap;
+}
+
+.meta-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: var(--primary-lightest);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--primary-lighter);
+}
+
+.meta-info-item i {
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+/* Section Header - Modern Professional */
+.section-header-professional {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.section-header-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
+}
+
+.section-header-content {
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.section-icon-professional {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(30, 41, 59, 0.3);
+    position: relative;
+}
+
+.section-icon-professional::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, var(--primary-color), var(--navy-dark));
+    border-radius: var(--border-radius-lg);
+    z-index: -1;
+    opacity: 0.2;
+}
+
+.section-title-professional {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    margin: 0.25rem 0 0 0;
+    font-weight: 400;
+}
+
+.products-count-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    margin-left: auto;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Product Cards - Modern Design */
+.products-grid-professional {
+    display: grid;
+    gap: 2rem;
+}
+
+.product-card-professional {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.product-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    opacity: 0.8;
+}
+
+.product-card-professional:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--primary-light);
+}
+
+/* Product Header - Enhanced */
+.product-header-professional {
+    background: linear-gradient(135deg, var(--subtle-gradient));
+    padding: 2rem;
+    border-bottom: 2px solid var(--primary-lighter);
+    position: relative;
+}
+
+.product-title-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.product-info-section {
+    flex: 1;
+}
+
+.product-name-with-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+}
+
+.product-name-professional {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.product-icon-professional {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    flex-shrink: 0;
+}
+
+.dropdown-toggle-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.dropdown-toggle-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.dropdown-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.dropdown-toggle-btn i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle-btn[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.product-dates-info {
+    display: flex;
+    gap: 2rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.date-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--lighter-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--card-border);
+    font-weight: 500;
+}
+
+.date-info-item i {
+    color: var(--primary-color);
+}
+
+/* Status Badges - Modern Design */
+.status-badge-modern {
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-xs);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--card-shadow);
+    border: 2px solid transparent;
+}
+
+.status-completed { 
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-in-progress { 
+    background: linear-gradient(135deg, var(--info-color), #0284c7);
+    color: white;
+    border-color: var(--info-color);
+}
+
+.status-under-review { 
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+.status-pending { 
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+/* Dropdown Content - Modern Style */
+.product-dropdown {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+.product-dropdown-content {
+    padding: 2rem;
+}
+
+.dropdown-section {
+    margin-bottom: 2.5rem;
+}
+
+.dropdown-section:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary-lighter);
+}
+
+.dropdown-section-title i {
+    font-size: 1.1em;
+    color: var(--primary-color);
+}
+
+/* Info Cards Grid - Enhanced */
+.info-cards-grid-professional {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card-professional {
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border: 1px solid var(--primary-lighter);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.info-card-professional:hover {
+    background: var(--card-bg);
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.info-card-header-professional {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-card-icon-professional {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.info-card-title-professional {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.info-card-value-professional {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Criticality Badges - Enhanced */
+.criticality-badge-professional {
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--card-shadow);
+    border: 2px solid transparent;
+}
+
+.criticality-critical { 
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+.criticality-high { 
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+.criticality-medium { 
+    background: linear-gradient(135deg, var(--info-color), #0284c7);
+    color: white;
+    border-color: var(--info-color);
+}
+
+.criticality-low { 
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+/* Questions Grid - Enhanced Modern Design */
+.questions-grid-professional {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.question-card-professional {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.question-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.question-card-professional:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--card-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.question-header-professional {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.question-number-professional {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.question-text-professional {
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.question-answer-professional {
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border: 1px solid var(--primary-lighter);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.25rem;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--primary-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    margin-top: 0.75rem;
+}
+
+.question-answer-professional i {
+    color: var(--primary-color);
+}
+
+/* Action Section - Modern CTA */
+.action-section-professional {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--primary-lighter);
+    text-align: center;
+}
+
+.view-results-btn-professional {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1.25rem 2.5rem;
+    color: white;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.view-results-btn-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.view-results-btn-professional:hover::before {
+    left: 100%;
+}
+
+.view-results-btn-professional:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5);
+    color: white;
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
+}
+
+/* Empty State - Modern Design */
+.empty-state-professional {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--card-border);
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: var(--card-shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.empty-state-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.empty-icon-professional {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    color: var(--text-muted);
+    font-size: 3rem;
+    border: 2px solid var(--primary-lighter);
+}
+
+.empty-title-professional {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.empty-description-professional {
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* Enhanced Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.product-card-professional {
+    animation: slideInUp 0.6s ease forwards;
+}
+
+.product-card-professional:nth-child(2) { animation-delay: 0.1s; }
+.product-card-professional:nth-child(3) { animation-delay: 0.2s; }
+.product-card-professional:nth-child(4) { animation-delay: 0.3s; }
+
+.client-header-card {
+    animation: fadeInScale 0.5s ease forwards;
+}
+
+.section-header-professional {
+    animation: slideInUp 0.6s ease forwards;
+    animation-delay: 0.2s;
+}
+
+/* Responsive Design - Enhanced */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 0 1rem;
+    }
+    
+    .client-header-content {
+        padding: 1.5rem;
+    }
+    
+    .client-name {
+        font-size: 1.75rem;
+    }
+    
+    .client-avatar-large {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .section-header-content {
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+    
+    .section-icon-professional {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .section-title-professional {
+        font-size: 1.5rem;
+    }
+    
+    .status-badge-professional {
+        position: static;
+        margin-top: 1rem;
+        align-self: flex-start;
+        padding: 0.5rem 1rem;
+        font-size: var(--font-size-xs);
+    }
+    
+    .client-meta-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .meta-info-item {
+        padding: 0.5rem 0.75rem;
+        font-size: var(--font-size-xs);
+    }
+    
+    .product-header-professional {
+        padding: 1.5rem;
+    }
+    
+    .product-name-professional {
+        font-size: 1.25rem;
+    }
+    
+    .product-icon-professional {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .dropdown-toggle-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .info-cards-grid-professional {
+        grid-template-columns: 1fr;
+    }
+    
+    .questions-grid-professional {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-title-section {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .product-dates-info {
+        gap: 1rem;
+    }
+    
+    .date-info-item {
+        padding: 0.4rem 0.75rem;
+        font-size: var(--font-size-xs);
+    }
+    
+    .view-results-btn-professional {
+        padding: 1rem 2rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .empty-title-professional {
+        font-size: 1.5rem;
+    }
+    
+    .empty-description-professional {
+        font-size: var(--font-size-base);
+    }
+    
+    .empty-icon-professional {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .client-details-container {
+        padding: 1rem 0;
+    }
+    
+    .content-container {
+        padding: 0 0.75rem;
+    }
+    
+    .client-header-content {
+        padding: 1.25rem;
+    }
+    
+    .section-header-content {
+        padding: 1.25rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .products-count-badge {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .product-header-professional {
+        padding: 1.25rem;
+    }
+    
+    .product-dropdown-content {
+        padding: 1.5rem;
+    }
+    
+    .dropdown-section-title {
+        font-size: var(--font-size-lg);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="client-details-container">
+    <div class="content-container">
+        <!-- Navigation Breadcrumb -->
+        <div class="nav-breadcrumb">
+            <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to Client Management
+            </a>
+        </div>
+
+        <!-- Client Header Card -->
+        <div class="client-header-card">
+            <div class="client-header-content">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+                        <div class="client-avatar-large">
+                            {{ client.username[0].upper() if client.username else 'U' }}
+                        </div>
+                        <h1 class="client-name">{{ client.username }}</h1>
+                        <p class="client-email">{{ client.email }}</p>
+                        <p class="client-org">
+                            <i class="bi bi-building"></i>
+                            {{ client.organization or 'No Organization Specified' }}
+                        </p>
+                        <div class="client-meta-info">
+                            <div class="meta-info-item">
+                                <i class="bi bi-clock"></i>
+                                Last Login: {{ client.last_login.strftime('%B %d, %Y at %I:%M %p') if client.last_login else 'Never logged in' }}
+                </div>
+                            <div class="meta-info-item">
+                                <i class="bi bi-calendar-plus"></i>
+                                Member Since: {{ client.created_at.strftime('%B %d, %Y') if client.created_at else 'Unknown' }}
+                </div>
+            </div>
+        </div>
+                    <div class="col-md-4 text-end">
+                        <div class="status-badge-professional {% if client.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            <i class="bi bi-{% if client.is_active %}check-circle-fill{% else %}pause-circle-fill{% endif %}"></i>
+                            {{ 'Active Account' if client.is_active else 'Inactive Account' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header-professional">
+            <div class="section-header-content">
+                <div class="section-icon-professional">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <div>
+                    <h2 class="section-title-professional">Products Portfolio</h2>
+                    <p class="section-subtitle">Security assessments and application profiles</p>
+                </div>
+                <div class="products-count-badge">
+                    {{ client.products|length }} Product{{ 's' if client.products|length != 1 else '' }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="products-grid-professional">
+            {% if client.products %}
+                                {% for product in client.products %}
+                <div class="product-card-professional">
+                    <!-- Product Header with Dropdown Toggle -->
+                    <div class="product-header-professional">
+                        <div class="product-title-section">
+                            <div class="product-info-section">
+                                <div class="product-name-with-dropdown">
+                                    <h3 class="product-name-professional">
+                                        <div class="product-icon-professional">
+                                            <i class="bi bi-app-indicator"></i>
+                </div>
+                                        {{ product.application_name or product.name }}
+                                    </h3>
+                                    <button class="dropdown-toggle-btn" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#productDetails{{ product.id }}" aria-expanded="false" 
+                                            aria-controls="productDetails{{ product.id }}">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                </div>
+                                <div class="product-dates-info">
+                                    <div class="date-info-item">
+                                        <i class="bi bi-calendar"></i>
+                                        Created {{ product.created_at.strftime('%B %d, %Y') if product.created_at else 'Unknown' }}
+                </div>
+                                    {% if product.updated_at and product.updated_at != product.created_at %}
+                                    <div class="date-info-item">
+                                        <i class="bi bi-clock-history"></i>
+                                        Updated {{ product.updated_at.strftime('%B %d, %Y') if product.updated_at else 'Unknown' }}
+            </div>
+                                    {% endif %}
+                </div>
+                </div>
+                            <div>
+                                <span class="status-badge-modern status-{{ product.status.replace('_', '-') }}">
+                                    <i class="bi bi-{% if product.status == 'completed' %}check-circle-fill
+                                        {% elif product.status == 'in_progress' %}hourglass-split
+                                        {% elif product.status == 'under_review' %}eye-fill
+                                        {% else %}clock-fill{% endif %}"></i>
+                                    {{ product.status.replace('_', ' ').title() }}
+                                </span>
+                </div>
+                </div>
+            </div>
+
+                    <!-- Collapsible Product Details -->
+                    <div class="collapse" id="productDetails{{ product.id }}">
+                        <div class="product-dropdown">
+                            <div class="product-dropdown-content">
+                                <!-- Product Details Section -->
+                                <div class="dropdown-section">
+                                    <h5 class="dropdown-section-title">
+                                        <i class="bi bi-info-circle"></i>
+                                        Product Details
+                                    </h5>
+                                    <div class="info-cards-grid-professional">
+                                        {% if product.product_owner %}
+                                        <div class="info-card-professional">
+                                            <div class="info-card-header-professional">
+                                                <div class="info-card-icon-professional">
+                                                    <i class="bi bi-person-badge"></i>
+                                                </div>
+                                                <h6 class="info-card-title-professional">Product Owner</h6>
+                                            </div>
+                                            <p class="info-card-value-professional">{{ product.product_owner }}</p>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if product.business_criticality %}
+                                        <div class="info-card-professional">
+                                            <div class="info-card-header-professional">
+                                                <div class="info-card-icon-professional">
+                                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                                                <h6 class="info-card-title-professional">Business Criticality</h6>
+                                            </div>
+                                            <p class="info-card-value-professional">
+                                                <span class="criticality-badge-professional criticality-{{ product.business_criticality.lower() }}">
+                                                    <i class="bi bi-shield-{% if product.business_criticality == 'Critical' %}exclamation
+                                                        {% elif product.business_criticality == 'High' %}fill-exclamation
+                                                        {% else %}check{% endif %}"></i>
+                                                    {{ product.business_criticality }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if product.q3_category %}
+                                        <div class="info-card-professional">
+                                            <div class="info-card-header-professional">
+                                                <div class="info-card-icon-professional">
+                                                    <i class="bi bi-code-slash"></i>
+                                                </div>
+                                                <h6 class="info-card-title-professional">Technology Stack</h6>
+                                            </div>
+                                            <p class="info-card-value-professional">{{ product.q3_other if product.q3_category == 'Other' else product.q3_category }}</p>
+                                        </div>
+                                            {% endif %}
+
+                                        {% if product.q5_category %}
+                                        <div class="info-card-professional">
+                                            <div class="info-card-header-professional">
+                                                <div class="info-card-icon-professional">
+                                                    <i class="bi bi-cloud-fill"></i>
+                                                </div>
+                                                <h6 class="info-card-title-professional">Deployment Platform</h6>
+                        </div>
+                                            <p class="info-card-value-professional">{{ product.q5_other if product.q5_category == 'Other' else product.q5_category }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                                </div>
+
+                                <!-- Application Security Profile Section -->
+                                <div class="dropdown-section">
+                                    <h5 class="dropdown-section-title">
+                                        <i class="bi bi-shield-shaded"></i>
+                                        Application Security Profile
+                                    </h5>
+                                    <div class="questions-grid-professional">
+                                        {% set questions = [
+                                            ("Brief description of the application, users and its business purpose?", product.q1_category, product.q1_other),
+                                            ("How does the application handle user authentication and authorization?", product.q2_category, product.q2_other),
+                                            ("What are the primary programming languages, frameworks, and databases used?", product.q3_category, product.q3_other),
+                                            ("Where is the application's source code hosted?", product.q4_category, product.q4_other),
+                                            ("Where is this application deployed?", product.q5_category, product.q5_other),
+                                            ("Is there an automated CI/CD pipeline in place?", product.q6_category, product.q6_other),
+                                            ("What is the highest sensitivity level of the data this application processes?", product.q7_category, product.q7_other),
+                                            ("Are any security scans currently being run against this application?", product.q8_category, product.q8_other),
+                                            ("Does the application rely on any critical third-party services or APIs?", product.q9_category, product.q9_other),
+                                            ("Is this application subject to any specific regulatory or compliance standards?", product.q10_category, product.q10_other)
+                                        ] %}
+
+                                        {% for question_text, category, other in questions %}
+                                            {% if category %}
+                                            <div class="question-card-professional">
+                                                <div class="question-header-professional">
+                                                    <div class="question-number-professional">{{ loop.index }}</div>
+                                                    <p class="question-text-professional">{{ question_text }}</p>
+                                                </div>
+                                                <div class="question-answer-professional">
+                                                    <i class="bi bi-arrow-right-circle-fill"></i>
+                                                    {{ other if category == 'Other' and other else category }}
+                            </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                </div>
+                
+                                <!-- Action Section -->
+                                <div class="dropdown-section">
+                                    <div class="text-center">
+                                        <a href="{{ url_for('admin_product_results', product_id=product.id) }}" class="view-results-btn-professional">
+                                            <i class="bi bi-bar-chart-line-fill"></i>
+                                            View Security Assessment Results
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <!-- Empty State -->
+                <div class="empty-state-professional">
+                    <div class="empty-icon-professional">
+                        <i class="bi bi-inbox"></i>
+            </div>
+                    <h3 class="empty-title-professional">No Products Found</h3>
+                    <p class="empty-description-professional">
+                        This client hasn't created any security assessment products yet. 
+                        They can start by creating their first product assessment.
+                    </p>
+                    <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Client Management
+                    </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+
+<script>
+// Add dropdown toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle dropdown button rotation and functionality
+    const dropdownBtns = document.querySelectorAll('.dropdown-toggle-btn');
+    
+    dropdownBtns.forEach(btn => {
+        // Handle the collapse events
+        const targetId = btn.getAttribute('data-bs-target');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+            targetElement.addEventListener('show.bs.collapse', function() {
+                btn.setAttribute('aria-expanded', 'true');
+            });
+            
+            targetElement.addEventListener('hide.bs.collapse', function() {
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
