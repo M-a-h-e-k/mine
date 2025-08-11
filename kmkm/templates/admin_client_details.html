@@ -20,6 +20,15 @@ body {
     background: var(--light-bg);
     min-height: calc(100vh - var(--navbar-height));
     padding: 2rem 0;
+    font-size: 0.9rem;
+    /* Smaller typography for this page */
+    --font-size-xs: 0.7rem;
+    --font-size-sm: 0.8rem;
+    --font-size-base: 0.75rem;
+    --font-size-lg: 0.875rem;
+    --font-size-xl: 1rem;
+    --font-size-2xl: 1.1rem;
+    --font-size-3xl: 1.2rem;
 }
 
 .content-container {
@@ -42,7 +51,7 @@ body {
 .breadcrumb-btn {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     border: none;
-    color: white;
+    color: white !important;
     border-radius: var(--border-radius-lg);
     padding: 1rem 1.5rem;
     text-decoration: none;
@@ -59,7 +68,7 @@ body {
 
 .breadcrumb-btn:hover {
     background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
-    color: white;
+    color: white !important;
     text-decoration: none;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
@@ -712,7 +721,7 @@ body {
     border: none;
     border-radius: var(--border-radius-lg);
     padding: 0.75rem 1.25rem;
-    color: #ffffff;
+    color: #ffffff !important;
     font-weight: 600;
     font-size: var(--font-size-sm);
     text-decoration: none;
@@ -749,6 +758,10 @@ body {
     color: #ffffff !important;
     background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
 }
+
+/* Ensure button text and icon are visible on dark bg */
+.view-results-btn-professional, .view-results-btn-professional i { color: #ffffff !important; opacity: 1 !important; }
+
 
 /* Empty State - Enhanced Modern Design */
 .empty-state-professional {
@@ -1001,6 +1014,21 @@ body {
     font-size: var(--font-size-base);
 }
 }
+
+/* Compact sizing overrides for this page */
+.client-details-container .client-name { font-size: 1.5rem; }
+.client-details-container .bi { font-size: 0.9em !important; }
+.client-details-container .section-icon-professional { width: 64px; height: 64px; font-size: 1.6rem; }
+.client-details-container .product-icon-professional { width: 32px; height: 32px; font-size: 0.9rem; }
+.client-details-container .dropdown-toggle-btn { width: 32px; height: 32px; }
+.client-details-container .status-badge-professional,
+.client-details-container .status-badge-modern { padding: 0.6rem 1rem; }
+.client-details-container .products-count-badge { padding: 0.75rem 1.25rem; }
+.client-details-container .meta-info-item i,
+.client-details-container .dropdown-section-title i,
+.client-details-container .question-answer-professional i,
+.client-details-container .date-info-item i { font-size: 1em; }
+
 </style>
 {% endblock %}
 
