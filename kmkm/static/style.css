@@ -77,11 +77,11 @@
     /* Typography - Professional Normal Sizes */
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
-    --font-size-base: 0.875rem;
-    --font-size-lg: 1rem;
-    --font-size-xl: 1.125rem;
-    --font-size-2xl: 1.25rem;
-    --font-size-3xl: 1.375rem;
+    --font-size-base: 0.8125rem; /* 13px base for a more compact admin view */
+    --font-size-lg: 0.9375rem;
+    --font-size-xl: 1.0625rem;
+    --font-size-2xl: 1.1875rem;
+    --font-size-3xl: 1.25rem;
 }
 
 * {

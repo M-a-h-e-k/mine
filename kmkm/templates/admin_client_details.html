@@ -90,61 +90,35 @@ body {
     padding: 3rem;
 }
 
-.client-avatar-large {
-    width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    border-radius: var(--border-radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 2rem;
-    box-shadow: 0 12px 35px rgba(37, 99, 235, 0.4);
-    position: relative;
-    border: 4px solid white;
-}
+/* Avatar removed in admin view for cleaner layout */
+.client-avatar-large { display: none; }
 
-.client-avatar-large::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    background: linear-gradient(135deg, var(--primary-light), var(--primary-color), var(--navy-dark));
-    border-radius: var(--border-radius-lg);
-    z-index: -1;
-    opacity: 0.3;
-}
+/* Decorative ring not needed when avatar is hidden */
+.client-avatar-large::before { display: none; }
 
 .client-name {
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 1.75rem;
+    font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.25rem;
 }
 
 .client-email {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-base);
     color: var(--text-secondary);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     font-weight: 500;
 }
 
 .client-org {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     font-weight: 500;
 }
 
@@ -261,18 +235,14 @@ body {
 }
 
 .section-title-professional {
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--text-primary);
     margin: 0;
-    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .section-subtitle {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin: 0.5rem 0 0 0;
     font-weight: 500;
@@ -354,29 +324,29 @@ body {
 }
 
 .product-name-professional {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.75rem;
     flex: 1;
 }
 
 .product-icon-professional {
-    width: 60px;
-    height: 60px;
+    width: 38px;
+    height: 38px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.5rem;
-    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
     flex-shrink: 0;
-    border: 3px solid white;
+    border: 2px solid white;
 }
 
 .dropdown-toggle-btn {
@@ -384,16 +354,16 @@ body {
     border: none;
     color: white;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    border: 2px solid white;
 }
 
 .dropdown-toggle-btn:hover {
@@ -408,7 +378,7 @@ body {
 }
 
 .dropdown-toggle-btn i {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     transition: transform 0.3s ease;
 }
 
@@ -418,28 +388,28 @@ body {
 
 .product-dates-info {
     display: flex;
-    gap: 2.5rem;
+    gap: 1rem;
     color: var(--text-secondary);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .date-info-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
     background: linear-gradient(135deg, var(--lighter-bg), var(--primary-lightest));
     border-radius: var(--border-radius-lg);
-    border: 2px solid var(--primary-lighter);
+    border: 1px solid var(--primary-lighter);
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.08);
 }
 
 .date-info-item i {
     color: var(--primary-color);
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 /* Status Badges - Enhanced Modern Design */
@@ -741,21 +711,21 @@ body {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     border: none;
     border-radius: var(--border-radius-lg);
-    padding: 1.5rem 3rem;
-    color: white;
-    font-weight: 700;
-    font-size: var(--font-size-lg);
+    padding: 0.75rem 1.25rem;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 1rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.4);
-    text-transform: uppercase;
-    letter-spacing: 0.75px;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    text-transform: none;
+    letter-spacing: 0.25px;
     position: relative;
     overflow: hidden;
-    border: 3px solid white;
+    border: 2px solid rgba(255,255,255,0.6);
 }
 
 .view-results-btn-professional::before {
@@ -774,9 +744,9 @@ body {
 }
 
 .view-results-btn-professional:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 50px rgba(37, 99, 235, 0.6);
-    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.5);
+    color: #ffffff !important;
     background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
 }
 
@@ -1028,8 +998,8 @@ body {
     }
     
     .dropdown-section-title {
-        font-size: var(--font-size-xl);
-    }
+    font-size: var(--font-size-base);
+}
 }
 </style>
 {% endblock %}
@@ -1037,22 +1007,12 @@ body {
 {% block content %}
 <div class="client-details-container">
     <div class="content-container">
-        <!-- Navigation Breadcrumb -->
-        <div class="nav-breadcrumb">
-            <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
-                <i class="bi bi-arrow-left"></i>
-                Back to Client Management
-            </a>
-        </div>
 
         <!-- Enhanced Client Header Card -->
         <div class="client-header-card">
             <div class="client-header-content">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <div class="client-avatar-large">
-                            {{ client.username[0].upper() if client.username else 'U' }}
-                        </div>
                         <h1 class="client-name">{{ client.username }}</h1>
                         <p class="client-email">
                             <i class="bi bi-envelope-fill"></i>
@@ -1279,12 +1239,16 @@ body {
                         This client hasn't created any security assessment products yet. 
                         They can start by creating their first product assessment to begin their security journey.
                     </p>
-                    <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
-                        <i class="bi bi-arrow-left"></i>
-                        Back to Client Management
-                    </a>
                 </div>
             {% endif %}
+
+            <!-- Move Back button to end of page -->
+            <div class="nav-breadcrumb" style="margin-top: 2rem; text-align:center;">
+                <a href="{{ url_for('manage_clients') }}" class="breadcrumb-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Client Management
+                </a>
+            </div>
         </div>
     </div>
 </div>
