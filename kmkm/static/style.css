@@ -2684,6 +2684,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     border: 1px solid #d1d5db;
     border-radius: 8px;
     resize: none;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 .compose-actions {
@@ -3675,6 +3676,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
     color: var(--text-primary) !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* Modal Content Font Fixes */
