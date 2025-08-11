@@ -2684,6 +2684,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
     border: 1px solid #d1d5db;
     border-radius: 8px;
     resize: none;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 .compose-actions {
@@ -2731,7 +2732,7 @@ h6 { font-size: 0.825rem; font-weight: 600; }
 
 .dashboard-header h1,
 .dashboard-header .display-6 {
-    color: white !important;
+    color: #ffffff !important;
     position: relative;
     z-index: 1;
 }
@@ -3308,6 +3309,7 @@ a:focus-visible {
 h1, h2, h3, h4, h5, h6 {
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern" 1, "liga" 1;
+    color: var(--text-primary);
 }
 
 /* Beautiful Tooltip Enhancement */
@@ -3675,6 +3677,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
     color: var(--text-primary) !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* Modal Content Font Fixes */
@@ -3960,5 +3963,40 @@ a:hover {
     .navbar * {
         color: white !important;
     }
+}
+
+/* High-contrast typography defaults */
+body, p, small, span, li, label, .form-text {
+    color: var(--text-primary);
+}
+
+/* Ensure badge text contrasts with backgrounds */
+.badge.bg-warning { color: #111827; } /* dark text on yellow */
+.badge.bg-info { color: #0b1623; }    /* darker text on info */
+.badge.bg-light { color: #111827; }
+.badge.bg-secondary { color: #ffffff; }
+.badge.bg-success { color: #ffffff; }
+.badge.bg-danger { color: #ffffff; }
+
+/* Ensure card headers with dark backgrounds keep white text */
+.card-header.text-white, .bg-gradient-primary.text-white, .bg-gradient.text-white,
+.bg-gradient-success.text-white, .bg-gradient-warning.text-white, .bg-danger.text-white {
+    color: #ffffff !important;
+}
+
+/* Improve placeholder contrast */
+::placeholder { color: var(--text-secondary) !important; opacity: 0.9; }
+
+/* Make form labels clearly visible */
+.form-label { color: var(--text-primary) !important; font-weight: 600; }
+
+/* Headings default to primary text color outside dark headers */
+.card:not(.bg-gradient-primary) h1,
+.card:not(.bg-gradient-primary) h2,
+.card:not(.bg-gradient-primary) h3,
+.card:not(.bg-gradient-primary) h4,
+.card:not(.bg-gradient-primary) h5,
+.card:not(.bg-gradient-primary) h6 {
+    color: var(--text-primary);
 }
 

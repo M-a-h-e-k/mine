@@ -110,7 +110,7 @@
                                                                     {% elif chat.review_status == 'rejected' %}bi-x-circle-fill
                                                                     {% elif chat.review_status == 'completed' %}bi-check-circle-fill
                                                                     {% else %}bi-clock-fill{% endif %} me-2"></i>
-                                                                <span class="fw-bold" style="color: #fff !important; font-weight: 700;">
+                                                                <span class="fw-bold text-white" style="font-weight: 700;">
                                                                     {% if chat.review_status == 'completed' %}Completed
                                                                     {% else %}{{ chat.review_status.replace('_', ' ').title() }}
                                                                     {% endif %}
