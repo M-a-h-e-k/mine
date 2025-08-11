@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Client Details - Admin{% endblock %}
+
 {% block head %}
 <style>
 /* ========================================
@@ -477,6 +479,19 @@ body {
     background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
     color: white;
     border-color: var(--secondary-color);
+}
+
+/* Added statuses for completeness */
+.status-review-done {
+    background: linear-gradient(135deg, var(--success-color), #16a34a);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-needs-client-response {
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
 }
 
 /* Dropdown Content - Enhanced Modern Style */
@@ -1124,6 +1139,8 @@ body {
                                     <i class="bi bi-{% if product.status == 'completed' %}check-circle-fill
                                         {% elif product.status == 'in_progress' %}hourglass-split
                                         {% elif product.status == 'under_review' %}eye-fill
+                                        {% elif product.status == 'review_done' %}check-circle-fill
+                                        {% elif product.status == 'needs_client_response' %}chat-dots-fill
                                         {% else %}clock-fill{% endif %}"></i>
                                     {{ product.status.replace('_', ' ').title() }}
                                 </span>

@@ -101,6 +101,7 @@
             box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
         }
     </style>
+    {% block head %}{% endblock %}
 </head>
 <body class="{% if request.endpoint == 'index' %}landing-page{% else %}dashboard-page{% endif %}">
 
