@@ -10,17 +10,17 @@
                 <!-- Chat Header -->
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1" style="color: white !important;">
+                        <h5 class="mb-1">
                             <i class="bi bi-chat-dots me-2"></i>Question Chat
                         </h5>
                         <small class="opacity-75" style="color: rgba(255,255,255,0.9) !important;">
                             {{ chat.response.section }} | 
                             Status: 
                             <span class="badge 
-                                {% if chat.review_status == 'approved' %}bg-success
-                                {% elif chat.review_status == 'needs_revision' %}bg-warning
-                                {% elif chat.review_status == 'rejected' %}bg-danger
-                                {% else %}bg-secondary{% endif %}" style="color: white !important;">
+                                {% if chat.review_status == 'approved' %}bg-success text-white
+                                {% elif chat.review_status == 'needs_revision' %}bg-warning text-dark
+                                {% elif chat.review_status == 'rejected' %}bg-danger text-white
+                                {% else %}bg-secondary text-white{% endif %}">
                                 {{ chat.review_status.replace('_', ' ').title() }}
                             </span>
                         </small>
@@ -28,12 +28,12 @@
                     <div class="d-flex gap-2">
                         {% if session.role == 'lead' and chat.is_active and chat.review_status != 'approved' %}
                         <form method="post" action="{{ url_for('approve_from_chat', chat_id=chat.id) }}" class="d-inline">
-                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this question and close the chat?')" style="color: white !important;">
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this question and close the chat?')">
                                 <i class="bi bi-check-circle me-1"></i>Approve
                             </button>
                         </form>
                         {% endif %}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm" style="color: white !important;">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm">
                             <i class="bi bi-arrow-left me-1"></i>Back
                         </a>
                     </div>
@@ -51,12 +51,12 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div>
                                         <strong style="color: #333 !important;">Client Answer:</strong> 
-                                        <span class="badge bg-info ms-1" id="currentAnswer" style="color: white !important;">{{ chat.response.answer }}</span>
+                                        <span class="badge bg-info text-dark ms-1" id="currentAnswer">{{ chat.response.answer }}</span>
                                         <small class="text-muted ms-2" style="color: #6b7280 !important;">(Last updated: {{ chat.response.updated_at.strftime('%Y-%m-%d %H:%M') }})</small>
                                     </div>
                                     {% if session.role == 'client' and chat.review_status == 'rejected' and chat.is_active %}
                                     <a href="{{ url_for('reselect_question', response_id=chat.response.id) }}" 
-                                       class="btn btn-danger btn-sm" style="color: white !important;">
+                                       class="btn btn-danger btn-sm">
                                         <i class="bi bi-arrow-repeat me-1"></i>Re-select Answer
                                     </a>
                                     {% endif %}
@@ -141,7 +141,7 @@
                             <small class="text-muted me-2" style="white-space: nowrap; color: #6b7280 !important;">Evidence file (optional)</small>
                         </div>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary" style="color: white !important;">
+                        <button type="submit" class="btn btn-primary">
                             <i class="bi bi-send me-1"></i>Send
                         </button>
                     </form>
