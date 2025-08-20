@@ -1,0 +1,1212 @@
+{% extends "base.html" %}
+
+{% block title %}Client Details - Admin{% endblock %}
+
+{% block head %}
+<style>
+/* ========================================
+   ENHANCED CLIENT DETAILS PAGE DESIGN
+   Accorian-inspired Professional Theme
+======================================== */
+
+/* Reset and Base Styles */
+body {
+    background: var(--light-bg) !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Main Container - Enhanced Modern Design */
+.client-details-container {
+    background: var(--light-bg);
+    min-height: calc(100vh - var(--navbar-height));
+    padding: 2rem 0;
+    font-size: 0.9rem;
+    /* Smaller typography for this page */
+    --font-size-xs: 0.7rem;
+    --font-size-sm: 0.8rem;
+    --font-size-base: 0.75rem;
+    --font-size-lg: 0.875rem;
+    --font-size-xl: 1rem;
+    --font-size-2xl: 1.1rem;
+    --font-size-3xl: 1.2rem;
+}
+
+.content-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .content-container {
+        padding: 0 2rem;
+    }
+}
+
+/* Navigation Breadcrumb - Enhanced Style */
+.nav-breadcrumb {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    color: white !important;
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.breadcrumb-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
+    color: white !important;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+/* Client Header Card - Professional Enhanced */
+.client-header-card {
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
+    border: 1px solid var(--primary-lighter);
+    overflow: hidden;
+    position: relative;
+}
+
+.client-header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light), var(--navy-dark));
+}
+
+.client-header-content {
+    padding: 3rem;
+}
+
+/* Avatar removed in admin view for cleaner layout */
+.client-avatar-large { display: none; }
+
+/* Decorative ring not needed when avatar is hidden */
+.client-avatar-large::before { display: none; }
+
+.client-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.client-email {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.client-org {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.client-org i {
+    color: var(--primary-color);
+    font-size: 1.2em;
+}
+
+.status-badge-professional {
+    padding: 1rem 1.75rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
+}
+
+.status-active {
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+.client-meta-info {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 3px solid var(--primary-lighter);
+    flex-wrap: wrap;
+}
+
+.meta-info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary-lightest), white);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--primary-lighter);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.meta-info-item i {
+    color: var(--primary-color);
+    font-size: 1.3em;
+}
+
+/* Section Header - Enhanced Professional */
+.section-header-professional {
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--primary-lighter);
+    margin-bottom: 3rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.section-header-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color), var(--primary-light));
+}
+
+.section-header-content {
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.section-icon-professional {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 12px 35px rgba(30, 41, 59, 0.4);
+    position: relative;
+    border: 4px solid white;
+}
+
+.section-icon-professional::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    background: linear-gradient(135deg, var(--primary-color), var(--navy-dark));
+    border-radius: var(--border-radius-lg);
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.section-title-professional {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.section-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
+}
+
+.products-count-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 1rem 1.75rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    margin-left: auto;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    border: 3px solid white;
+}
+
+/* Product Cards - Enhanced Modern Design */
+.products-grid-professional {
+    display: grid;
+    gap: 2.5rem;
+}
+
+.product-card-professional {
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--primary-lighter);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.product-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light), var(--navy-dark));
+    opacity: 0.9;
+}
+
+.product-card-professional:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+/* Product Header - Enhanced */
+.product-header-professional {
+    background: linear-gradient(135deg, var(--subtle-gradient), white);
+    padding: 2.5rem;
+    border-bottom: 3px solid var(--primary-lighter);
+    position: relative;
+}
+
+.product-title-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+}
+
+.product-info-section {
+    flex: 1;
+}
+
+.product-name-with-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1.5rem;
+}
+
+.product-name-professional {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.product-icon-professional {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    flex-shrink: 0;
+    border: 2px solid white;
+}
+
+.dropdown-toggle-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    border: 2px solid white;
+}
+
+.dropdown-toggle-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5);
+}
+
+.dropdown-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
+}
+
+.dropdown-toggle-btn i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle-btn[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.product-dates-info {
+    display: flex;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.date-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(135deg, var(--lighter-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--primary-lighter);
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.08);
+}
+
+.date-info-item i {
+    color: var(--primary-color);
+    font-size: 1em;
+}
+
+/* Status Badges - Enhanced Modern Design */
+.status-badge-modern {
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
+}
+
+.status-completed { 
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-in-progress { 
+    background: linear-gradient(135deg, var(--info-color), #0284c7);
+    color: white;
+    border-color: var(--info-color);
+}
+
+.status-under-review { 
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+.status-pending { 
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+/* Added statuses for completeness */
+.status-review-done {
+    background: linear-gradient(135deg, var(--success-color), #16a34a);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.status-needs-client-response {
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+/* Dropdown Content - Enhanced Modern Style */
+.product-dropdown {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-dropdown-content {
+    padding: 2.5rem;
+}
+
+.dropdown-section {
+    margin-bottom: 3rem;
+}
+
+.dropdown-section:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-lighter);
+}
+
+.dropdown-section-title i {
+    font-size: 1.3em;
+    color: var(--primary-color);
+}
+
+/* Info Cards Grid - Enhanced */
+.info-cards-grid-professional {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.info-card-professional {
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border: 2px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.info-card-professional:hover {
+    background: var(--card-bg);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color);
+}
+
+.info-card-header-professional {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-card-icon-professional {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    border: 3px solid white;
+}
+
+.info-card-title-professional {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin: 0;
+}
+
+.info-card-value-professional {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Criticality Badges - Enhanced */
+.criticality-badge-professional {
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid transparent;
+}
+
+.criticality-critical { 
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+.criticality-high { 
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    color: white;
+    border-color: var(--warning-color);
+}
+
+.criticality-medium { 
+    background: linear-gradient(135deg, var(--info-color), #0284c7);
+    color: white;
+    border-color: var(--info-color);
+}
+
+.criticality-low { 
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    border-color: var(--success-color);
+}
+
+/* Questions Grid - Enhanced Modern Design */
+.questions-grid-professional {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 2rem;
+}
+
+.question-card-professional {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.question-card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.question-card-professional:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+.question-header-professional {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.question-number-professional {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    flex-shrink: 0;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    border: 3px solid white;
+}
+
+.question-text-professional {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.question-answer-professional {
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border: 2px solid var(--primary-lighter);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem 1.5rem;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--primary-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+    margin-top: 1rem;
+}
+
+.question-answer-professional i {
+    color: var(--primary-color);
+    font-size: 1.2em;
+}
+
+/* Action Section - Enhanced Modern CTA */
+.action-section-professional {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 3px solid var(--primary-lighter);
+    text-align: center;
+}
+
+.view-results-btn-professional {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: 0.75rem 1.25rem;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    text-transform: none;
+    letter-spacing: 0.25px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.6);
+}
+
+.view-results-btn-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+.view-results-btn-professional:hover::before {
+    left: 100%;
+}
+
+.view-results-btn-professional:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.5);
+    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy-dark));
+}
+
+/* Ensure button text and icon are visible on dark bg */
+.view-results-btn-professional, .view-results-btn-professional i { color: #ffffff !important; opacity: 1 !important; }
+
+
+/* Empty State - Enhanced Modern Design */
+.empty-state-professional {
+    background: linear-gradient(135deg, var(--card-bg), var(--primary-lightest));
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--primary-lighter);
+    padding: 5rem 3rem;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.empty-state-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.empty-icon-professional {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--primary-lightest), var(--lighter-bg));
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2.5rem;
+    color: var(--text-muted);
+    font-size: 4rem;
+    border: 3px solid var(--primary-lighter);
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
+}
+
+.empty-title-professional {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--navy-dark), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.empty-description-professional {
+    color: var(--text-secondary);
+    font-size: var(--font-size-xl);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+    font-weight: 500;
+}
+
+/* Enhanced Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.product-card-professional {
+    animation: slideInUp 0.8s ease forwards;
+}
+
+.product-card-professional:nth-child(2) { animation-delay: 0.15s; }
+.product-card-professional:nth-child(3) { animation-delay: 0.3s; }
+.product-card-professional:nth-child(4) { animation-delay: 0.45s; }
+
+.client-header-card {
+    animation: fadeInScale 0.7s ease forwards;
+}
+
+.section-header-professional {
+    animation: slideInUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+}
+
+/* Responsive Design - Enhanced */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 0 1rem;
+    }
+    
+    .client-header-content {
+        padding: 2rem;
+    }
+    
+    .client-name {
+        font-size: 2.25rem;
+    }
+    
+    .client-avatar-large {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .section-header-content {
+        padding: 2rem;
+        gap: 1.5rem;
+    }
+    
+    .section-icon-professional {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .section-title-professional {
+        font-size: 1.75rem;
+    }
+    
+    .status-badge-professional {
+        position: static;
+        margin-top: 1.5rem;
+        align-self: flex-start;
+        padding: 0.75rem 1.25rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .client-meta-info {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .meta-info-item {
+        padding: 0.75rem 1rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .product-header-professional {
+        padding: 2rem;
+    }
+    
+    .product-name-professional {
+        font-size: 1.5rem;
+    }
+    
+    .product-icon-professional {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .dropdown-toggle-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .info-cards-grid-professional {
+        grid-template-columns: 1fr;
+    }
+    
+    .questions-grid-professional {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-title-section {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .product-dates-info {
+        gap: 1.5rem;
+    }
+    
+    .date-info-item {
+        padding: 0.6rem 1rem;
+        font-size: var(--font-size-sm);
+    }
+    
+    .view-results-btn-professional {
+        padding: 1.25rem 2.5rem;
+        font-size: var(--font-size-base);
+    }
+    
+    .empty-title-professional {
+        font-size: 2rem;
+    }
+    
+    .empty-description-professional {
+        font-size: var(--font-size-lg);
+    }
+    
+    .empty-icon-professional {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .client-details-container {
+        padding: 1.5rem 0;
+    }
+    
+    .content-container {
+        padding: 0 0.75rem;
+    }
+    
+    .client-header-content {
+        padding: 1.5rem;
+    }
+    
+    .section-header-content {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .products-count-badge {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .product-header-professional {
+        padding: 1.5rem;
+    }
+    
+    .product-dropdown-content {
+        padding: 2rem;
+    }
+    
+    .dropdown-section-title {
+    font-size: var(--font-size-base);
+}
+}
+
+/* Compact sizing overrides for this page */
+.client-details-container .client-name { font-size: 1.5rem; }
+.client-details-container .bi { font-size: 0.9em !important; }
+.client-details-container .section-icon-professional { width: 64px; height: 64px; font-size: 1.6rem; }
+.client-details-container .product-icon-professional { width: 32px; height: 32px; font-size: 0.9rem; }
+.client-details-container .dropdown-toggle-btn { width: 32px; height: 32px; }
+.client-details-container .status-badge-professional,
+.client-details-container .status-badge-modern { padding: 0.6rem 1rem; }
+.client-details-container .products-count-badge { padding: 0.75rem 1.25rem; }
+.client-details-container .meta-info-item i,
+.client-details-container .dropdown-section-title i,
+.client-details-container .question-answer-professional i,
+.client-details-container .date-info-item i { font-size: 1em; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="client-details-dashboard" style="display:flex; gap:2.5rem; max-width:1400px; margin:2.5rem auto;">
+    <!-- Left Sidebar: Client Info -->
+    <div style="flex:0 0 340px; background:#fff; border-radius:18px; box-shadow:0 8px 32px rgba(30,64,175,0.10); padding:2.5rem 2rem; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:90px; height:90px; border-radius:50%; background:#e0e7ef; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:#2563eb; margin-bottom:1.2rem;">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <h1 style="font-size:1.6rem; font-weight:700; color:#1e293b; margin-bottom:0.3rem; text-align:center;">{{ client.username }}</h1>
+        <div style="color:#475569; font-size:1rem; margin-bottom:0.5rem; text-align:center;">
+            <i class="bi bi-envelope-fill" style="color:#2563eb;"></i> {{ client.email }}
+        </div>
+        <div style="color:#475569; font-size:1rem; margin-bottom:0.7rem; text-align:center;">
+            <i class="bi bi-building" style="color:#2563eb;"></i> {{ client.organization or 'No Organization Specified' }}
+        </div>
+        <div style="margin-bottom:1.2rem;">
+            <span class="status-badge-professional {% if client.is_active %}status-active{% else %}status-inactive{% endif %}" style="font-size:1rem; min-width:140px; background:#e6fbe8; color:#059669; border:2px solid #059669; padding:0.5rem 1.2rem;">
+                <i class="bi bi-{% if client.is_active %}check-circle-fill{% else %}pause-circle-fill{% endif %}" style="color:#059669;"></i>
+                <span style="color:#059669;">{{ 'Active Account' if client.is_active else 'Inactive Account' }}</span>
+            </span>
+        </div>
+        <div style="width:100%; margin-bottom:0.7rem;">
+            <div style="background:#f1f5fa; border-radius:10px; padding:0.7rem 1rem; margin-bottom:0.5rem; color:#2563eb; font-size:0.97rem; display:flex; align-items:center; gap:0.6rem;">
+                <i class="bi bi-clock-history"></i>
+                <span>Last Login: {{ client.last_login.strftime('%B %d, %Y at %I:%M %p') if client.last_login else 'Never logged in' }}</span>
+            </div>
+            <div style="background:#f1f5fa; border-radius:10px; padding:0.7rem 1rem; color:#2563eb; font-size:0.97rem; display:flex; align-items:center; gap:0.6rem;">
+                <i class="bi bi-calendar-plus"></i>
+                <span>Member Since: {{ client.created_at.strftime('%B %d, %Y') if client.created_at else 'Unknown' }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- Right Main: Products Portfolio -->
+    <div style="flex:1; display:flex; flex-direction:column; gap:2.5rem;">
+        <div style="background:#fff; border-radius:18px; box-shadow:0 8px 32px rgba(30,64,175,0.10); padding:2.5rem 2rem; margin-bottom:0.5rem;">
+            <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
+                <div style="width:48px; height:48px; background:#e0e7ef; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#2563eb; font-size:1.7rem;">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <div>
+                    <h2 style="font-size:1.5rem; font-weight:700; color:#1e293b; margin-bottom:0.1rem;">Products Portfolio</h2>
+                    <div style="font-size:1rem; color:#475569;">Security assessments and application profiles</div>
+                </div>
+                <div style="margin-left:auto; background:#f3f4f6; color:#2563eb; border-radius:10px; font-size:1rem; font-weight:600; padding:0.7rem 1.5rem; min-width:120px; text-align:center; border:1.5px solid #e0e7ef;">{{ client.products|length }} Product{{ 's' if client.products|length != 1 else '' }}</div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px,1fr)); gap:1.5rem;">
+                {% if client.products %}
+                    {% for product in client.products %}
+                    <div style="background:#f8fafc; border-radius:14px; box-shadow:0 2px 8px rgba(30,64,175,0.07); border:1.5px solid #e5e7eb; padding:1.5rem 1.2rem; display:flex; flex-direction:column; gap:1rem;">
+                        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
+                            <div style="width:38px; height:38px; background:#e0e7ef; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#2563eb; font-size:1.2rem;">
+                                <i class="bi bi-shield-shaded"></i>
+                            </div>
+                            <div style="flex:1;">
+                                <h3 style="font-size:1.1rem; color:#2563eb; font-weight:600; margin-bottom:0.1rem;">{{ product.application_name or product.name }}</h3>
+                                <div style="font-size:0.97rem; color:#475569; display:flex; gap:1.2rem; align-items:center;">
+                                    <span><i class="bi bi-calendar-plus" style="color:#2563eb;"></i> Created {{ product.created_at.strftime('%B %d, %Y') if product.created_at else 'Unknown' }}</span>
+                                    {% if product.updated_at and product.updated_at != product.created_at %}
+                                    <span><i class="bi bi-clock-history" style="color:#2563eb;"></i> Updated {{ product.updated_at.strftime('%B %d, %Y') if product.updated_at else 'Unknown' }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span style="font-size:1rem; min-width:120px; background:#e0f2fe; color:#2563eb; border:2px solid #2563eb; border-radius:8px; padding:0.5rem 1.2rem; text-align:center; font-weight:600;">{{ product.status.replace('_', ' ').title() }}</span>
+                        </div>
+                        <div>
+                            <button class="dropdown-toggle-btn" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#productDetails{{ product.id }}" aria-expanded="false" 
+                                    aria-controls="productDetails{{ product.id }}" style="background:#f3f4f6; border:none; border-radius:8px; padding:0.4rem 1rem; color:#2563eb; font-weight:500; font-size:1rem; display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
+                                <i class="bi bi-chevron-down" id="chevron-{{ product.id }}"></i> <span>Details</span>
+                            </button>
+                            <div class="collapse product-details-collapse" id="productDetails{{ product.id }}">
+                                <div style="background:#fff; border-radius:0 0 12px 12px; border:1.5px solid #e5e7eb; margin-top:1rem; padding:1.2rem;">
+                                    <div style="margin-bottom:1.2rem;">
+                                        <h4 style="font-size:1.1rem; color:#2563eb; font-weight:600; margin-bottom:0.7rem;">Product Description</h4>
+                                        <ul style="list-style:none; padding:0; margin:0;">
+                                            {% set questions = [
+                                                ("Brief description of the application, users and its business purpose?", product.q1_category, product.q1_other),
+                                                ("How does the application handle user authentication and authorization?", product.q2_category, product.q2_other),
+                                                ("What are the primary programming languages, frameworks, and databases used?", product.q3_category, product.q3_other),
+                                                ("Where is the application's source code hosted?", product.q4_category, product.q4_other),
+                                                ("Where is this application deployed?", product.q5_category, product.q5_other),
+                                                ("Is there an automated CI/CD pipeline in place?", product.q6_category, product.q6_other),
+                                                ("What is the highest sensitivity level of the data this application processes?", product.q7_category, product.q7_other),
+                                                ("Are any security scans currently being run against this application?", product.q8_category, product.q8_other),
+                                                ("Does the application rely on any critical third-party services or APIs?", product.q9_category, product.q9_other),
+                                                ("Is this application subject to any specific regulatory or compliance standards?", product.q10_category, product.q10_other)
+                                            ] %}
+                                            {% for question_text, category, other in questions %}
+                                                {% if category %}
+                                                <li style="margin-bottom:0.7rem;">
+                                                    <span style="font-weight:500; color:#334155;">Q{{ loop.index }}. {{ question_text }}</span><br>
+                                                    <span style="color:#2563eb; margin-left:0.5rem;">{{ other if category == 'Other' and other else category }}</span>
+                                                </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                                        <a href="{{ url_for('admin_product_results', product_id=product.id) }}" style="font-size:1rem; padding:0.7rem 1.5rem; background:#2563eb; color:#fff; border:2px solid #2563eb; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block;">
+                                            <i class="bi bi-bar-chart-line-fill"></i> View Results
+                                        </a>
+                                        <a href="{{ url_for('list_question_chats', product_id=product.id) }}" style="font-size:1rem; padding:0.7rem 1.5rem; background:#f3f4f6; color:#2563eb; border:2px solid #2563eb; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block;">
+                                            <i class="bi bi-chat-dots-fill"></i> View Chats
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Empty State -->
+                    <div style="background:#f8fafc; border:1.5px solid #e5e7eb; border-radius:12px; padding:2.5rem 1.5rem; text-align:center;">
+                        <div style="background:#fff; border:1.5px solid #e5e7eb; box-shadow:0 2px 8px rgba(30,64,175,0.04); width:90px; height:90px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; color:#2563eb; font-size:2.2rem;">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+                        <h3 style="font-size:1.2rem; color:#2563eb; font-weight:700;">No Products Found</h3>
+                        <p style="font-size:1rem; color:#334155;">This client hasn't created any security assessment products yet. They can start by creating their first product assessment to begin their security journey.</p>
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Back button -->
+            <div style="margin-top:2.5rem; text-align:center;">
+                <a href="{{ url_for('manage_clients') }}" style="font-size:1.1rem; padding:1.1rem 2.2rem; background:#2563eb; color:#fff; border:2px solid #2563eb; border-radius:10px; text-decoration:none; font-weight:600; display:inline-block;">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Client Management
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced dropdown toggle functionality with state persistence
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle dropdown button rotation and functionality
+    const dropdownBtns = document.querySelectorAll('.dropdown-toggle-btn');
+    
+    // Restore dropdown states from localStorage
+    const savedStates = JSON.parse(localStorage.getItem('dropdownStates') || '{}');
+    
+    dropdownBtns.forEach(btn => {
+        // Handle the collapse events
+        const targetId = btn.getAttribute('data-bs-target');
+        const targetElement = document.querySelector(targetId);
+        const productId = targetId.replace('#productDetails', '');
+        
+        if (targetElement) {
+            // Restore saved state
+            if (savedStates[productId] === 'open') {
+                targetElement.classList.add('show');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+            
+            targetElement.addEventListener('show.bs.collapse', function() {
+                btn.setAttribute('aria-expanded', 'true');
+                // Save state
+                savedStates[productId] = 'open';
+                localStorage.setItem('dropdownStates', JSON.stringify(savedStates));
+            });
+            
+            targetElement.addEventListener('hide.bs.collapse', function() {
+                btn.setAttribute('aria-expanded', 'false');
+                // Save state
+                savedStates[productId] = 'closed';
+                localStorage.setItem('dropdownStates', JSON.stringify(savedStates));
+            });
+        }
+    });
+    
+    // Initialize all dropdowns as closed by default (keeping them closed on first load)
+    dropdownBtns.forEach(btn => {
+        if (btn.getAttribute('aria-expanded') !== 'true') {
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+</script>
+{% endblock %}

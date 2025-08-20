@@ -1,0 +1,856 @@
+{% extends "base.html" %}
+
+{% block title %}Security Assessment Results - SecureSphere{% endblock %}
+<!-- This template is used for both client and admin views, showing maturity scores (1-5 scale) only -->
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            {% if (maturity_score and dimension_scores) or (responses and responses|length > 0) %}
+            
+            <div class="results-header mb-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold text-dark mb-2">Security Assessment Results</h2>
+                        <p class="text-muted">Comprehensive security maturity analysis for <strong>{{ product.name }}</strong></p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="overall-maturity text-center">
+                                                 <div class="maturity-badge-large level-{{ maturity_score|default(1) }}">
+                             <div class="level-number">{{ maturity_score|default(1) }}</div>
+                                                         <div class="level-text">
+                                 {% set score = maturity_score|default(1) %}
+                                 {% if score == 1 %}
+                                     Initial
+                                 {% elif score == 2 %}
+                                     Developing
+                                 {% elif score == 3 %}
+                                     Defined
+                                 {% elif score == 4 %}
+                                     Managed
+                                 {% elif score == 5 %}
+                                     Optimized
+                                 {% else %}
+                                     Not Assessed
+                                 {% endif %}
+                             </div>
+                        </div>
+                                                 <p class="text-muted mt-2">
+                             {% if score == 1 %}
+                                 Basic security awareness with ad-hoc processes
+                             {% elif score == 2 %}
+                                 Developing security practices with some documentation
+                             {% elif score == 3 %}
+                                 Well-defined security processes documented and followed
+                             {% elif score == 4 %}
+                                 Managed security with metrics and continuous monitoring
+                             {% elif score == 5 %}
+                                 Continuous improvement with optimized security processes
+                             {% else %}
+                                 Complete your assessment to see your maturity level
+                             {% endif %}
+                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circular Heatmap Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header text-center py-3" style="background: #2c3e50; border-bottom: 1px solid #34495e;">
+                            <h5 class="mb-0 fw-bold" style="color: #ffffff;">
+                                <i class="bi bi-pie-chart me-2" style="color: #3498db;"></i>Security Maturity Heatmap
+                            </h5>
+                            <small style="color: #e8e8e8;">Visual representation of your security posture across all dimensions</small>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="ring-heatmap-container">
+                                <div id="ring-heatmap"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maturity Level Display -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <div class="maturity-level-display p-2" style="background: rgba(0, 123, 255, 0.1); border-radius: 8px;">
+                        <span class="text-muted small" style="font-size: 14px;">
+                            Current Security Maturity: 
+                            <strong class="text-primary" id="maturity-level-text">Level {{ maturity_score }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Dimensions Results - Full Width -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header text-center py-3" style="background: #2c3e50; border-bottom: 1px solid #34495e;">
+                            <h5 class="mb-0 fw-bold" style="color: #ffffff;">
+                                <i class="bi bi-list-check me-2" style="color: #27ae60;"></i>Security Dimensions Results
+                            </h5>
+                            <small style="color: #e8e8e8;">{{ dimension_scores|length }} Main Categories Analyzed</small>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="dimensions-grid">
+                                <div class="row g-3">
+                                    {% for dimension, score in dimension_scores.items() %}
+                                    <div class="col-md-2 col-sm-6">
+                                        {% set score_value = score if score is number else score.average_score if score.average_score is defined else 0 %}
+                                        {% set score_level = score_value|round|int %}
+                                        <div class="dimension-label-item d-flex flex-column align-items-center justify-content-between p-3 rounded-3 border shadow-sm dimension-card-level-{{ score_level }}" style="height: 180px;">
+                                            <div class="dimension-color level-{{ score_value|round|int }} mb-2 rounded-circle" style="width: 20px; height: 20px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"></div>
+                                            <div class="text-center flex-grow-1 d-flex flex-column justify-content-center">
+                                                <h6 class="dimension-name fw-bold text-dark mb-2" style="font-size: 0.85rem; line-height: 1.2;">{{ dimension }}</h6>
+                                                <div class="text-muted mb-2" style="font-size: 0.7rem; font-weight: 500;">
+                                                    {% if score_value >= 4 %}
+                                                        <i class="bi bi-check-circle-fill text-success me-1"></i>Excellent
+                                                    {% elif score_value >= 3 %}
+                                                        <i class="bi bi-exclamation-circle-fill text-warning me-1"></i>Good
+                                                    {% else %}
+                                                        <i class="bi bi-x-circle-fill text-danger me-1"></i>Needs Improvement
+                                                    {% endif %}
+                                                    - Level {{ score_value|round|int }}
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="score-display fw-bold text-white px-3 py-1 rounded" style="font-size: 0.9rem; background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">{{ "%.1f"|format(score_value) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Responses Section -->
+            {% if responses and responses|length > 0 %}
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header text-center py-3" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: #ffffff;">
+                            <h5 class="mb-0 fw-bold" style="color: #ffffff;">
+                                <i class="bi bi-chat-square-text me-2" style="color: #ffffff;"></i>Detailed Assessment Responses
+                            </h5>
+                            <small style="color: #ecf0f1;">Review your answers and feedback from security experts</small>
+                            <div class="mt-3 text-center">
+                                {% if session['role'] in ['admin', 'lead', 'client'] %}
+                                    <a href="{{ url_for('export_pdf', product_id=product.id) }}" class="btn btn-outline-danger">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i>Export Responses as PDF
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            {% set sections = {} %}
+                            {% for resp in responses %}
+                                {% if resp.section not in sections %}
+                                    {% set _ = sections.update({resp.section: []}) %}
+                                {% endif %}
+                                {% set _ = sections[resp.section].append(resp) %}
+                            {% endfor %}
+
+                            <!-- Accordion for Dimensions -->
+                            <div class="accordion" id="dimensionsAccordion">
+                                {% for section_name, section_responses in sections.items() %}
+                                <div class="accordion-item border-0 shadow-sm mb-3">
+                                    <h2 class="accordion-header" id="heading-{{ loop.index0 }}">
+                                        <button class="accordion-button collapsed fw-bold" 
+                                                type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#collapse-{{ loop.index0 }}" 
+                                                aria-expanded="false" 
+                                                aria-controls="collapse-{{ loop.index0 }}">
+                                            <i class="bi bi-folder me-2"></i>
+                                            {{ section_name }}
+                                            <span class="badge bg-primary ms-2">{{ section_responses|length }} questions</span>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-{{ loop.index0 }}" 
+                                         class="accordion-collapse collapse" 
+                                         aria-labelledby="heading-{{ loop.index0 }}" 
+                                         data-bs-parent="#dimensionsAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Questions in 2-column layout -->
+                                            <div class="row g-4">
+                                                {% for resp in section_responses %}
+                                                    {% set lead_comment = resp.lead_comments[0] if resp.lead_comments else None %}
+                                                    {% set question_number = loop.index %}
+                                                    
+                                                    <div class="col-lg-6 col-md-12">
+                                                        <div class="question-card h-100">
+                                                            <div class="card border-0 shadow-sm h-100">
+                                                                <div class="card-body">
+                                                                    <!-- Question Header with Number -->
+                                                                    <div class="d-flex align-items-start mb-3">
+                                                                        <div class="question-number me-3">
+                                                                            <span class="badge bg-secondary rounded-pill">Q{{ question_number }}</span>
+                                                                        </div>
+                                                                        <div class="flex-grow-1">
+                                                                            <h6 class="question-text fw-bold text-dark mb-2">{{ resp.question }}</h6>
+                                                                            <div class="response-status">
+                                                                                {% if resp.is_reviewed %}
+                                                                                    <span class="badge bg-success">
+                                                                                        <i class="bi bi-check-circle me-1"></i>Reviewed
+                                                                                    </span>
+                                                                                {% else %}
+                                                                                    <span class="badge bg-warning">
+                                                                                        <i class="bi bi-clock me-1"></i>Pending Review
+                                                                                    </span>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Answer -->
+                                                                    <div class="answer-section mb-3">
+                                                                        <div class="answer-label mb-2">
+                                                                            <i class="bi bi-chat-square-text me-2 text-primary"></i>
+                                                                            <strong class="text-dark">Answer:</strong>
+                                                                        </div>
+                                                                        <div class="answer-value text-dark bg-light p-2 rounded">{{ resp.answer }}</div>
+                                                                    </div>
+
+                                                                    <!-- Client Comment -->
+                                                                    {% if resp.client_comment %}
+                                                                    <div class="comment-section mb-3">
+                                                                        <div class="comment-label mb-2">
+                                                                            <i class="bi bi-chat-dots me-2 text-info"></i>
+                                                                            <strong class="text-dark">Client Comment:</strong>
+                                                                        </div>
+                                                                        <div class="comment-value text-dark bg-light p-2 rounded">{{ resp.client_comment }}</div>
+                                                                    </div>
+                                                                    {% endif %}
+
+                                                                    <!-- Evidence -->
+                                                                    {% if resp.evidence_path %}
+                                                                    <div class="evidence-section mb-3">
+                                                                        <div class="evidence-label mb-2">
+                                                                            <i class="bi bi-paperclip me-2 text-secondary"></i>
+                                                                            <strong class="text-dark">Evidence:</strong>
+                                                                        </div>
+                                                                        <a href="{{ url_for('uploaded_file', filename=resp.evidence_path.split('/')[-1]) }}" 
+                                                                           class="btn btn-outline-primary btn-sm">
+                                                                            <i class="bi bi-download me-1"></i>
+                                                                            View Attachment
+                                                                        </a>
+                                                                    </div>
+                                                                    {% endif %}
+
+                                                                    <!-- Reviewer Feedback -->
+                                                                    {% if lead_comment and lead_comment.comment %}
+                                                                    <div class="reviewer-feedback">
+                                                                        <div class="feedback-label mb-2">
+                                                                            <i class="bi bi-person-check me-2 text-success"></i>
+                                                                            <strong class="text-dark">Reviewer Feedback:</strong>
+                                                                        </div>
+                                                                        <div class="feedback-content text-dark bg-success bg-opacity-10 p-2 rounded border-start border-success border-3">{{ lead_comment.comment }}</div>
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- View Roadmap Button -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(111, 66, 193, 0.05) 0%, rgba(90, 50, 163, 0.05) 100%);">
+                        <div class="card-body p-5">
+                            <div class="mb-4">
+                                <i class="bi bi-map display-4 text-primary mb-3"></i>
+                                <h4 class="fw-bold text-dark mb-2">Ready for Your Security Roadmap?</h4>
+                                <p class="text-muted mb-4">Get strategic recommendations and a detailed 12-month improvement plan based on DSOMM framework</p>
+                            </div>
+                            
+                            {% if is_admin_view %}
+                                <a href="{{ url_for('admin_product_roadmap', product_id=product.id) }}" 
+                                   class="btn btn-lg shadow-lg px-5 py-3" 
+                                   style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); border: none; color: white; font-weight: 600;">
+                                    <i class="bi bi-arrow-right-circle me-2"></i>View Security Roadmap
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('product_roadmap', product_id=product_id, user_id=user_id) }}" 
+                                   class="btn btn-lg shadow-lg px-5 py-3" 
+                                   style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); border: none; color: white; font-weight: 600;">
+                                    <i class="bi bi-arrow-right-circle me-2"></i>View Security Roadmap
+                                </a>
+                            {% endif %}
+                            
+                            <div class="mt-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <i class="bi bi-bullseye text-success mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">Sub-Dimension<br>Improvements</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="bi bi-calendar-check text-warning mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">12-Month<br>Strategic Plan</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="bi bi-graph-up-arrow text-info mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">DSOMM-Based<br>Recommendations</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+    <div class="alert alert-info text-center">
+        <h4>No Assessment Data Available</h4>
+        <p>Complete your security assessment to view detailed results.</p>
+    <a href="{{ url_for('fill_questionnaire_section', product_id=product.id, section_idx=0) }}" class="btn btn-primary">Start Assessment</a>
+    </div>
+{% endif %}
+
+<style>
+/* Heatmap and Visualization Styles */
+.maturity-badge-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.maturity-badge-large.level-1 { 
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+    color: white;
+}
+.maturity-badge-large.level-2 { 
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+    color: white;
+}
+.maturity-badge-large.level-3 { 
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); 
+    color: white;
+}
+.maturity-badge-large.level-4 { 
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); 
+    color: white;
+}
+.maturity-badge-large.level-5 { 
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); 
+    color: white;
+}
+
+.level-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.level-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* Ring Heatmap Container */
+.ring-heatmap-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 15px;
+    overflow: visible;
+    padding: 40px;
+}
+
+#ring-heatmap {
+    width: 100%;
+    height: 100%;
+    max-width: 520px;
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.heatmap-legend {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Dimension Grid Styles */
+.dimensions-grid {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.dimension-label-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.dimension-label-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+}
+
+.dimension-color {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 8px;
+    border: 1px solid #ddd;
+}
+
+.dimension-name {
+    font-size: 1rem;
+    color: #1a202c;
+}
+
+/* Color definitions for maturity levels */
+.level-1 { background-color: #ef4444; }
+.level-2 { background-color: #f59e0b; }
+.level-3 { background-color: #eab308; }
+.level-4 { background-color: #84cc16; }
+.level-5 { background-color: #22c55e; }
+
+/* Question Card Styles */
+.question-card .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.question-card .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.question-number .badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.accordion-button {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: none;
+    border-radius: 10px !important;
+    margin-bottom: 0.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.accordion-button:not(.collapsed):hover {
+    color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed):focus {
+    color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed) * {
+    color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed) .badge {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed) i {
+    color: #ffffff !important;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Ensure equal width cards */
+.dimensions-grid .col {
+    flex: 1;
+    min-width: 0;
+}
+
+.dimension-label-item {
+    width: 100%;
+    justify-content: space-between;
+}
+
+/* Fix header text visibility - enhanced */
+.card-header h5,
+.card-header small,
+.card-header i {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+    border-bottom: 2px solid #34495e !important;
+    color: #ffffff !important;
+}
+
+/* Ensure all accordion headers are properly styled */
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.accordion-button:not(.collapsed):hover,
+.accordion-button:not(.collapsed):focus {
+    color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed) *,
+.accordion-button:not(.collapsed) .badge,
+.accordion-button:not(.collapsed) i {
+    color: #ffffff !important;
+}
+
+/* Fix chevron icon for expanded accordion */
+.accordion-button[aria-expanded="true"]:after {
+    filter: brightness(0) invert(1) !important;
+}
+
+/* Force white text on expanded accordion buttons */
+.accordion-button[aria-expanded="true"] {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    color: #ffffff !important;
+}
+
+.accordion-button[aria-expanded="true"] * {
+    color: #ffffff !important;
+}
+
+.accordion-button[aria-expanded="true"]:after {
+    filter: brightness(0) invert(1);
+}
+
+.accordion-item {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.answer-value, .comment-value {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.reviewer-feedback .feedback-content {
+    font-style: italic;
+}
+
+/* Dimension card background colors */
+.dimension-card-level-1 {
+    background: rgba(255, 68, 68, 0.1) !important;
+    border-color: rgba(255, 68, 68, 0.3) !important;
+}
+.dimension-card-level-2 {
+    background: rgba(255, 193, 7, 0.1) !important;
+    border-color: rgba(255, 193, 7, 0.3) !important;
+}
+.dimension-card-level-3 {
+    background: rgba(255, 204, 0, 0.1) !important;
+    border-color: rgba(255, 204, 0, 0.3) !important;
+}
+.dimension-card-level-4 {
+    background: rgba(76, 175, 80, 0.1) !important;
+    border-color: rgba(76, 175, 80, 0.3) !important;
+}
+.dimension-card-level-5 {
+    background: rgba(76, 175, 80, 0.1) !important;
+    border-color: rgba(76, 175, 80, 0.3) !important;
+}
+</style>
+
+<script>
+// Initialize ring heatmap when page loads
+document.addEventListener("DOMContentLoaded", function() {
+    {% if subdimension_scores %}
+    const subdimensionScores = {{ subdimension_scores|tojson|safe }};
+    console.log('Sub-dimension scores loaded:', subdimensionScores);
+    console.log('Number of sub-dimensions:', Object.keys(subdimensionScores).length);
+    generateRingHeatmap(subdimensionScores);
+    {% else %}
+    console.warn('No subdimension_scores data available');
+    {% endif %}
+});
+
+function generateRingHeatmap(subdimensionScores) {
+    const container = document.getElementById('ring-heatmap');
+    if (!container || !subdimensionScores) return;
+
+    // Clear existing content
+    container.innerHTML = '';
+
+    // Convert subdimension scores to array format with better organization
+    const dimensions = Object.entries(subdimensionScores).map(([name, data]) => ({
+        name: name,
+        score: data.average_score || 0,
+        level: Math.max(1, Math.min(5, Math.round(data.average_score || 0)))
+    }));
+
+    if (dimensions.length === 0) return;
+
+    // Create SVG with proper dimensions to fit container
+    const width = 480;
+    const height = 480;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const maxRadius = 180;
+    const minRadius = 40;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('style', 'background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%);');
+
+    // Enhanced colors for each maturity level
+    const colors = {
+        1: '#dc2626',  // Red - Initial
+        2: '#ea580c',  // Orange - Developing  
+        3: '#ca8a04',  // Amber - Defined
+        4: '#65a30d',  // Lime - Managed
+        5: '#16a34a'   // Green - Optimized
+    };
+
+    const levelNames = {
+        1: 'Initial',
+        2: 'Developing', 
+        3: 'Defined',
+        4: 'Managed',
+        5: 'Optimized'
+    };
+
+    // Calculate ring dimensions (5 concentric rings)
+    const ringWidth = (maxRadius - minRadius) / 5;
+    
+    // Draw concentric rings for each level (1-5)
+    for (let level = 1; level <= 5; level++) {
+        const innerR = minRadius + (level - 1) * ringWidth;
+        const outerR = minRadius + level * ringWidth;
+        
+        // Create background ring
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', centerX);
+        ring.setAttribute('cy', centerY);
+        ring.setAttribute('r', outerR);
+        ring.setAttribute('fill', 'none');
+        ring.setAttribute('stroke', '#e5e7eb');
+        ring.setAttribute('stroke-width', '1');
+        ring.setAttribute('opacity', '0.3');
+        svg.appendChild(ring);
+        
+        // Level labels removed to clean up the visualization
+    }
+
+    // Calculate angle for each dimension
+    const angleStep = (2 * Math.PI) / dimensions.length;
+    const avgScore = dimensions.reduce((sum, dim) => sum + dim.score, 0) / dimensions.length;
+
+    // Draw dimension segments
+    dimensions.forEach((dim, index) => {
+        const startAngle = index * angleStep - Math.PI / 2;
+        const endAngle = (index + 1) * angleStep - Math.PI / 2;
+        
+        // Draw segments for each level up to the dimension's level
+        for (let level = 1; level <= 5; level++) {
+            const innerR = minRadius + (level - 1) * ringWidth;
+            const outerR = minRadius + level * ringWidth;
+            
+            // Determine if this level should be filled based on dimension score
+            const shouldFill = level <= dim.level;
+            const fillColor = shouldFill ? colors[level] : '#f3f4f6';
+            const opacity = shouldFill ? 0.8 : 0.2;
+            
+            // Create path for ring segment
+            const x1 = centerX + innerR * Math.cos(startAngle);
+            const y1 = centerY + innerR * Math.sin(startAngle);
+            const x2 = centerX + outerR * Math.cos(startAngle);
+            const y2 = centerY + outerR * Math.sin(startAngle);
+            const x3 = centerX + outerR * Math.cos(endAngle);
+            const y3 = centerY + outerR * Math.sin(endAngle);
+            const x4 = centerX + innerR * Math.cos(endAngle);
+            const y4 = centerY + innerR * Math.sin(endAngle);
+            
+            const largeArcFlag = angleStep > Math.PI ? 1 : 0;
+            
+            const pathData = [
+                `M ${x1} ${y1}`,
+                `L ${x2} ${y2}`,
+                `A ${outerR} ${outerR} 0 ${largeArcFlag} 1 ${x3} ${y3}`,
+                `L ${x4} ${y4}`,
+                `A ${innerR} ${innerR} 0 ${largeArcFlag} 0 ${x1} ${y1}`,
+                'Z'
+            ].join(' ');
+            
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', fillColor);
+            path.setAttribute('stroke', '#ffffff');
+            path.setAttribute('stroke-width', '1');
+            path.setAttribute('opacity', opacity);
+            
+            // Add hover effects
+            path.addEventListener('mouseenter', function() {
+                this.setAttribute('opacity', shouldFill ? '1' : '0.4');
+                this.setAttribute('stroke-width', '2');
+            });
+            
+            path.addEventListener('mouseleave', function() {
+                this.setAttribute('opacity', opacity);
+                this.setAttribute('stroke-width', '1');
+            });
+            
+            // Add tooltip
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `${dim.name}: Level ${dim.level} (${dim.score.toFixed(1)})`;
+            path.appendChild(title);
+            
+            svg.appendChild(path);
+        }
+        
+        // Add dimension labels around the outer edge
+        const labelRadius = maxRadius + 25;
+        const labelAngle = startAngle + angleStep / 2;
+        const labelX = centerX + labelRadius * Math.cos(labelAngle);
+        const labelY = centerY + labelRadius * Math.sin(labelAngle);
+        
+        // Truncate long dimension names
+        const displayName = dim.name.length > 15 ? dim.name.substring(0, 15) + '...' : dim.name;
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', labelX);
+        text.setAttribute('y', labelY);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'middle');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('font-weight', '600');
+        text.setAttribute('fill', '#374151');
+        
+        // Rotate text for better readability
+        const rotation = (labelAngle * 180 / Math.PI);
+        if (rotation > 90 && rotation < 270) {
+            text.setAttribute('transform', `rotate(${rotation + 180} ${labelX} ${labelY})`);
+        } else {
+            text.setAttribute('transform', `rotate(${rotation} ${labelX} ${labelY})`);
+        }
+        
+        text.textContent = displayName;
+        svg.appendChild(text);
+    });
+
+    // Add center circle with overall maturity level
+    const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    centerCircle.setAttribute('cx', centerX);
+    centerCircle.setAttribute('cy', centerY);
+    centerCircle.setAttribute('r', minRadius - 5);
+    centerCircle.setAttribute('fill', colors[Math.round(avgScore)] || colors[1]);
+    centerCircle.setAttribute('stroke', '#ffffff');
+    centerCircle.setAttribute('stroke-width', '3');
+    centerCircle.setAttribute('opacity', '0.9');
+    svg.appendChild(centerCircle);
+
+    // Add center text showing overall maturity level
+    const levelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    levelText.setAttribute('x', centerX);
+    levelText.setAttribute('y', centerY - 5);
+    levelText.setAttribute('text-anchor', 'middle');
+    levelText.setAttribute('dominant-baseline', 'middle');
+    levelText.setAttribute('font-size', '18');
+    levelText.setAttribute('font-weight', 'bold');
+    levelText.setAttribute('fill', '#ffffff');
+    levelText.textContent = `Level ${Math.round(avgScore)}`;
+    svg.appendChild(levelText);
+    
+    const levelNameText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    levelNameText.setAttribute('x', centerX);
+    levelNameText.setAttribute('y', centerY + 12);
+    levelNameText.setAttribute('text-anchor', 'middle');
+    levelNameText.setAttribute('dominant-baseline', 'middle');
+    levelNameText.setAttribute('font-size', '10');
+    levelNameText.setAttribute('font-weight', '500');
+    levelNameText.setAttribute('fill', '#ffffff');
+    levelNameText.textContent = levelNames[Math.round(avgScore)] || 'Initial';
+    svg.appendChild(levelNameText);
+
+    // Add legend in a single row
+    const legend = document.createElement('div');
+    legend.className = 'heatmap-legend mt-3 d-flex justify-content-center align-items-center';
+    legend.style.flexWrap = 'nowrap';
+    legend.innerHTML = `
+        <div class="d-flex align-items-center me-4">
+            <div style="width: 12px; height: 12px; background: ${colors[1]}; border-radius: 2px; margin-right: 5px;"></div>
+            <small class="text-muted">L1: Initial</small>
+        </div>
+        <div class="d-flex align-items-center me-4">
+            <div style="width: 12px; height: 12px; background: ${colors[2]}; border-radius: 2px; margin-right: 5px;"></div>
+            <small class="text-muted">L2: Developing</small>
+        </div>
+        <div class="d-flex align-items-center me-4">
+            <div style="width: 12px; height: 12px; background: ${colors[3]}; border-radius: 2px; margin-right: 5px;"></div>
+            <small class="text-muted">L3: Defined</small>
+        </div>
+        <div class="d-flex align-items-center me-4">
+            <div style="width: 12px; height: 12px; background: ${colors[4]}; border-radius: 2px; margin-right: 5px;"></div>
+            <small class="text-muted">L4: Managed</small>
+        </div>
+        <div class="d-flex align-items-center">
+            <div style="width: 12px; height: 12px; background: ${colors[5]}; border-radius: 2px; margin-right: 5px;"></div>
+            <small class="text-muted">L5: Optimized</small>
+        </div>
+    `;
+
+    container.appendChild(svg);
+    container.appendChild(legend);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,455 @@
+{% extends "base.html" %}
+
+{% block title %}Lead Dashboard - SecureSphere{% endblock %}
+
+{% block content %}
+<div class="container my-4 dashboard-lead">
+<div class="dashboard-header text-center mb-4">
+    <h1 class="display-6 fw-bold mb-2">
+        <i class="bi bi-person-badge me-3"></i>Reviewer Dashboard
+    </h1>
+    <p class="lead mb-0">Review and manage questionnaire responses from clients</p>
+</div>
+
+{% if error_message %}
+<div class="alert alert-warning text-center">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error_message }}
+</div>
+{% endif %}
+
+<!-- Enhanced Statistics Dashboard -->
+<div class="row g-4 mb-5 justify-content-center">
+    <!-- Total Products Card -->
+    <div class="col-xl-4 col-lg-4 col-md-4">
+        <div class="card stat-card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">Total Products</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ total_products }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-arrow-up me-1"></i>Active assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-box-seam fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- In Progress Card -->
+    <div class="col-xl-4 col-lg-4 col-md-4">
+        <div class="card stat-card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">In Progress</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ in_progress_count }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-clock me-1"></i>Active assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-hourglass-split fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Card -->
+    <div class="col-xl-4 col-lg-4 col-md-4">
+        <div class="card stat-card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">Completed</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ completed_count }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-check me-1"></i>Finished assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-check-circle fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card dashboard-card">
+            <div class="card-body text-center">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-tools me-2"></i>Quick Actions
+                </h5>
+
+                <button class="btn btn-outline-primary btn-lg rounded-pill px-4" onclick="showHelpModal()">
+                    <i class="bi bi-question-circle me-2"></i>Need Help?
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Client Tabs Navigation -->
+{% if clients_data %}
+<div class="row">
+    <div class="col-12">
+        <div class="card dashboard-card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-clipboard-check me-2"></i>Questionnaire Responses
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <!-- Client Navigation Tabs -->
+                <nav class="nav nav-tabs" id="clientTabs" role="tablist">
+                    {% for client_id, client_data in clients_data.items() %}
+                    <button class="nav-link {% if loop.first %}active{% endif %}" id="client-{{ client_id }}-tab"
+                            data-bs-toggle="tab" data-bs-target="#client-{{ client_id }}" type="button"
+                            role="tab" aria-controls="client-{{ client_id }}" aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+                            data-client-id="{{ client_id }}">
+                        <i class="bi bi-person-circle me-2"></i>{{ client_data.user.username }}
+                        <span class="badge bg-primary ms-2">{{ client_data.products|length }} products</span>
+                    </button>
+                    {% endfor %}
+                </nav>
+
+                <!-- Client Tab Content -->
+                <div class="tab-content" id="clientTabContent">
+                    {% for client_id, client_data in clients_data.items() %}
+                    <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="client-{{ client_id }}"
+                         role="tabpanel" aria-labelledby="client-{{ client_id }}-tab">
+                        <div class="p-4">
+                            <!-- Client Info Banner -->
+                            <div class="alert alert-info d-flex align-items-center mb-4">
+                                <i class="bi bi-building me-3 fs-4"></i>
+                                <div>
+                                    <h6 class="mb-1">{{ client_data.user.username }}</h6>
+                                    <small class="text-muted">{{ client_data.user.organization or 'No Organization' }}</small>
+                                </div>
+                            </div>
+
+                            <!-- Product Navigation Pills -->
+                            {% if client_data.products|length > 1 %}
+                            <nav class="nav nav-pills mb-4" id="product-nav-{{ client_id }}" role="tablist">
+                                {% for product_id, product_data in client_data.products.items() %}
+                                <button class="nav-link {% if loop.first %}active{% endif %}" id="product-{{ product_id }}-tab"
+                                        data-bs-toggle="pill" data-bs-target="#product-{{ product_id }}" type="button"
+                                        role="tab" aria-controls="product-{{ product_id }}" aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+                                        data-product-id="{{ product_id }}" data-client-id="{{ client_id }}">
+                                    <i class="bi bi-box-seam me-2"></i>{{ product_data.product.name }}
+                                    <span class="badge bg-light text-dark ms-2">{{ product_data.responses|length }}</span>
+                                </button>
+                                {% endfor %}
+                            </nav>
+                            {% endif %}
+
+                            <!-- Product Tab Content -->
+                            <div class="tab-content" id="product-content-{{ client_id }}">
+                                {% for product_id, product_data in client_data.products.items() %}
+                                <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="product-{{ product_id }}"
+                                    role="tabpanel" aria-labelledby="product-{{ product_id }}-tab">
+                                    <div class="mb-4 text-end">
+                                        <a href="{{ url_for('product_results', product_id=product_id) }}" class="btn btn-outline-success">
+                                            <i class="bi bi-bar-chart-line me-1"></i>View Results
+                                        </a>
+                                    </div>
+
+                                    <!-- Section-wise Questions Layout -->
+                                    {% set sections = {} %}
+                                    {% for resp in product_data.responses %}
+                                        {% if resp.section not in sections %}
+                                            {% set _ = sections.update({resp.section: []}) %}
+                                        {% endif %}
+                                        {% set _ = sections[resp.section].append(resp) %}
+                                    {% endfor %}
+
+                                    {% for section_name, section_responses in sections.items() %}
+                                    <div class="section-container mb-3">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-gradient-primary text-white p-0">
+                                                <button class="btn btn-link text-white text-decoration-none w-100 text-start p-3"
+                                                        type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#section-{{ client_id }}-{{ product_id }}-{{ loop.index0 }}"
+                                                        aria-expanded="{% if loop.first %}true{% else %}false{% endif %}"
+                                                        aria-controls="section-{{ client_id }}-{{ product_id }}-{{ loop.index0 }}">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h6 class="mb-0">
+                                                            <i class="bi bi-folder me-2"></i>{{ section_name }}
+                                                        </h6>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-light text-dark me-2">{{ section_responses|length }} questions</span>
+                                                            <i class="bi bi-chevron-down collapse-icon"></i>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div class="collapse {% if loop.first %}show{% endif %}" id="section-{{ client_id }}-{{ product_id }}-{{ loop.index0 }}">
+                                                <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover mb-0">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th width="5%">#</th>
+                                                                <th width="55%">Question</th>
+                                                                <th width="20%">Status</th>
+                                                                <th width="20%">Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for resp in section_responses %}
+                                                            <tr class="status-{{ resp.review_status|default('pending') }}" data-response-id="{{ resp.id }}">
+                                                                <td>
+                                                                    <span class="question-number-clean">{{ loop.index }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="mb-1 fw-medium">{{ resp.question[:100] }}{% if resp.question|length > 100 %}...{% endif %}</p>
+                                                                    {% if resp.client_comment %}
+                                                                        <small class="text-muted">
+                                                                            <i class="bi bi-chat-dots me-1"></i>{{ resp.client_comment[:70] }}{% if resp.client_comment|length > 70 %}...{% endif %}
+                                                                        </small>
+                                                                    {% endif %}
+                                                                    <div class="mt-1">
+                                                                        <small class="text-info">
+                                                                            <i class="bi bi-check-circle me-1"></i>{{ resp.answer }}
+                                                                        </small>
+                                                                        {% if resp.evidence_path %}
+                                                                            <a href="{{ url_for('uploaded_file', filename=resp.evidence_path.split('/')[-1]) }}" target="_blank"
+                                                                               class="btn btn-outline-info btn-sm ms-2"
+                                                                               title="View Evidence">
+                                                                                <i class="bi bi-paperclip"></i>
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {% set review_status = resp.review_status|default('pending') %}
+                                                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                                                        {% if review_status == 'approved' %}
+                                                                            <span class="badge bg-success">
+                                                                                <i class="bi bi-check-circle me-1"></i>Approved
+                                                                            </span>
+                                                                        {% elif review_status == 'approved_after_revision' %}
+                                                                            <span class="badge bg-success">
+                                                                                <i class="bi bi-lock-fill me-1"></i>Frozen Approved
+                                                                            </span>
+                                                                        {% elif review_status == 'needs_revision' %}
+                                                                            <span class="badge bg-warning">
+                                                                                <i class="bi bi-exclamation-triangle me-1"></i>Needs Revision
+                                                                            </span>
+                                                                            <span class="notification-badge" id="lead-notif-{{ resp.id }}" style="display: none;">0</span>
+                                                                        {% elif review_status == 'rejected' %}
+                                                                            <span class="badge bg-danger">
+                                                                                <i class="bi bi-x-circle me-1"></i>Rejected
+                                                                            </span>
+                                                                            <span class="notification-badge" id="lead-notif-{{ resp.id }}" style="display: none;">0</span>
+                                                                        {% else %}
+                                                                            <span class="badge bg-secondary">
+                                                                                <i class="bi bi-clock me-1"></i>Pending
+                                                                            </span>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    {% set review_status = resp.review_status|default('pending') %}
+                                                                    {% if review_status == 'approved' %}
+                                                            <a href="{{ url_for('reopen_question', response_id=resp.id) }}" 
+                                                               class="btn btn-outline-warning btn-sm"
+                                                               onclick="return confirm('Are you sure you want to re-open this approved question for review?')">
+                                                                <i class="bi bi-unlock me-1"></i>Re-Open
+                                                            </a>
+                                                    {% elif review_status == 'approved_after_revision' %}
+                                                            <a href="{{ url_for('reopen_question', response_id=resp.id) }}" 
+                                                               class="btn btn-outline-warning btn-sm"
+                                                               onclick="return confirm('Are you sure you want to re-open this frozen approved question for review?')">
+                                                                <i class="bi bi-unlock me-1"></i>Re-Open
+                                                            </a>
+                                                    {% else %}
+                                                        <a href="{{ url_for('review_questionnaire', response_id=resp.id) }}"
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-pencil-square me-1"></i>Review
+                                                        </a>
+                                                        {% if review_status in ['needs_revision', 'rejected'] %}
+                                                        {% set found_chat = false %}
+                                                        {% for chat in active_chats_for_lead if not found_chat %}
+                                                            {% if chat.response_id == resp.id %}
+                                                        <a href="{{ url_for('view_question_chat', chat_id=chat.id) }}" 
+                                                           class="btn btn-outline-info btn-sm ms-1"
+                                                           title="View Question Chat">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                            {% set found_chat = true %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">No Responses Yet</h4>
+                    <p class="text-muted mb-4">Client questionnaire responses will appear here for review.</p>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Responses are automatically added when clients complete questionnaires.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+
+<script>
+// Animation for stats cards
+document.addEventListener('DOMContentLoaded', function() {
+    const statsCards = document.querySelectorAll('.stat-card');
+    statsCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.transform = 'translateY(-5px)';
+        }, index * 200);
+    });
+});
+
+function showHelpModal() {
+    // Create a simple help modal using Bootstrap
+    const helpContent = `
+        <div class="modal fade" id="helpModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-question-circle me-2"></i>Lead Dashboard Help
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-clipboard-check me-2"></i>Reviewing Responses</h6>
+                                <p>Click "Review" to evaluate client questionnaire responses and provide feedback.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-chat-left-text me-2"></i>Communications</h6>
+                                <p>Use "Client Communications" to view and respond to client messages and feedback.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-search me-2"></i>Filtering</h6>
+                                <p>Use the search and filter options to quickly find specific client responses.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-shield-check me-2"></i>Review Status</h6>
+                                <p>Track the status of each response: Pending, Approved, Needs Revision, or Rejected.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if present
+    const existingModal = document.getElementById('helpModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', helpContent);
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('helpModal')).show();
+}
+</script>
+</div>
+
+
+
+<script>
+// Dashboard functionality with state persistence
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore last viewed client and product tabs
+    const lastViewedClient = localStorage.getItem('lastViewedClient');
+    const lastViewedProduct = localStorage.getItem('lastViewedProduct');
+    
+    if (lastViewedClient) {
+        // Try to activate the last viewed client tab
+        const clientTab = document.querySelector(`#client-${lastViewedClient}-tab`);
+        if (clientTab) {
+            bootstrap.Tab.getOrCreateInstance(clientTab).show();
+        }
+    }
+    
+    if (lastViewedProduct) {
+        // Try to activate the last viewed product tab
+        const productTab = document.querySelector(`#product-${lastViewedProduct}-tab`);
+        if (productTab) {
+            bootstrap.Tab.getOrCreateInstance(productTab).show();
+        }
+    }
+    
+    // Save state when client tabs are clicked
+    document.querySelectorAll('[data-client-id]').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            const clientId = this.getAttribute('data-client-id');
+            if (clientId) {
+                localStorage.setItem('lastViewedClient', clientId);
+            }
+        });
+    });
+    
+    // Save state when product tabs are clicked
+    document.querySelectorAll('[data-product-id]').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const clientId = this.getAttribute('data-client-id');
+            if (productId) {
+                localStorage.setItem('lastViewedProduct', productId);
+            }
+            if (clientId) {
+                localStorage.setItem('lastViewedClient', clientId);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

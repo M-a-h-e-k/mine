@@ -1,0 +1,425 @@
+{% extends "base.html" %}
+
+{% block title %}Client Dashboard - SecureSphere{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.chart-legend {
+    padding: 20px 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 1.2em;
+    color: #495057;
+}
+
+.stat-item small {
+    color: #6c757d;
+    font-size: 0.85em;
+}
+
+.dashboard-stat-card {
+    transition: all 0.3s ease;
+    border: none !important;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    border: none !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.progress-ring {
+    width: 60px;
+    height: 60px;
+}
+
+.welcome-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Enhanced Dashboard Header -->
+<div class="dashboard-header text-center mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold mb-2 text-start welcome-gradient">
+                <i class="bi bi-person-circle me-3"></i>Welcome Back
+            </h1>
+            <p class="lead mb-0 text-start" style="color: #333; font-weight: 500;">
+                Track your security assessments and monitor progress
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <!-- Client Portal button removed as per requirements -->
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Dashboard Statistics -->
+<div class="row g-4 mb-5 justify-content-center">
+    <!-- Total Products Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card dashboard-stat-card h-100" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">Total Products</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ products|length }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-trending-up me-1"></i>All assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-box-seam fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- In Progress Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card dashboard-stat-card h-100" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">In Progress</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ products|selectattr('status', 'in', ['in_progress', 'under_review', 'needs_client_response'])|list|length }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-clock me-1"></i>Active assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-hourglass-split fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card dashboard-stat-card h-100" style="background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-white small fw-bold text-uppercase mb-1">Completed</div>
+                        <div class="h2 mb-0 fw-bold text-white">{{ products|selectattr('status', 'equalto', 'completed')|list|length }}</div>
+                        <div class="text-white small">
+                            <i class="bi bi-check-circle me-1"></i>Finished assessments
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-check-circle-fill fs-1 text-white opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Score Card removed as per requirements -->
+</div>
+
+<!-- Quick Actions Row -->
+<!-- Notifications Section -->
+{% if unread_chats_count > 0 or active_chats %}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning d-flex align-items-center" role="alert">
+            <i class="bi bi-bell-fill me-2"></i>
+            <div class="flex-grow-1">
+                <strong>You have notifications!</strong>
+                {% if unread_chats_count > 0 %}
+                    <span class="badge bg-danger ms-2">{{ unread_chats_count }} unread messages</span>
+                {% endif %}
+                {% if active_chats %}
+                    - {{ active_chats|length }} active chat(s) requiring your attention.
+                {% endif %}
+            </div>
+            <a href="{{ url_for('client_question_chats') }}" class="btn btn-warning btn-sm">
+                <i class="bi bi-chat-dots me-1"></i>View Chats
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4 mb-5">
+    <!-- Quick Actions -->
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom-0 py-3">
+                <h5 class="mb-0 d-flex align-items-center" style="color: #fff;">
+                    <i class="bi bi-lightning-charge me-2 text-primary"></i>Quick Actions
+                    <span class="badge bg-primary rounded-pill ms-auto">1</span>
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-lg rounded-3 shadow-sm">
+                        <i class="bi bi-plus-circle me-2"></i>Start New Assessment
+                    </a>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Chart section removed as per requirements -->
+</div>
+
+<!-- Products Section -->
+<div class="row" id="products-section">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom-0 py-3">
+                <div class="d-flex justify-content-between align-items-center" style="background: #232b3b; border-radius: 8px; padding: 8px 16px;">
+                    <h5 class="mb-0" style="color: #fff;">
+                        <i class="bi bi-collection me-2 text-primary"></i>Your Security Assessments
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="viewToggle" id="gridView" autocomplete="off" checked>
+                            <label class="btn btn-outline-secondary btn-sm" for="gridView">
+                                <i class="bi bi-grid"></i>
+                            </label>
+                            <input type="radio" class="btn-check" name="viewToggle" id="listView" autocomplete="off">
+                            <label class="btn btn-outline-secondary btn-sm" for="listView">
+                                <i class="bi bi-list"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if products %}
+                    <div class="row g-4" id="productsContainer">
+                        {% for product in products %}
+                        <div class="col-lg-6 col-md-6 product-item">
+                            <div class="card product-card h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title mb-1 fw-bold text-dark">{{ product.name }}</h6>
+                                            <p class="text-muted small mb-0">
+                                                Created Recently
+                                            </p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <!-- Status indicator instead of progress percentage -->
+                                            {% if product.status == 'completed' %}
+                                                <div class="status-indicator completed">
+                                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+                                                </div>
+                                            {% elif product.status == 'in_progress' %}
+                                                <div class="status-indicator in-progress">
+                                                    <i class="bi bi-clock-fill text-warning" style="font-size: 2rem;"></i>
+                                                </div>
+                                            {% else %}
+                                                <div class="status-indicator">
+                                                    <i class="bi bi-hourglass-split text-secondary" style="font-size: 2rem;"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Status Badge -->
+                                    <div class="mb-3">
+                                        {% if product.status == 'completed' %}
+                                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                                <i class="bi bi-check-circle me-1"></i>Completed
+                                            </span>
+                                        {% elif product.status == 'in_progress' %}
+                                            <span class="badge bg-warning rounded-pill px-3 py-2">
+                                                <i class="bi bi-clock me-1"></i>In Progress
+                                            </span>
+                                        {% elif product.status == 'under_review' %}
+                                            <span class="badge bg-info rounded-pill px-3 py-2">
+                                                <i class="bi bi-eye me-1"></i>Under Review
+                                            </span>
+                                        {% elif product.status == 'questions_done' %}
+                                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                                <i class="bi bi-check-square me-1"></i>Questions Complete
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                                <i class="bi bi-hourglass me-1"></i>Starting
+                                            </span>
+                                        {% endif %}
+                                        
+                                        {% if product.overall_score > 0 %}
+                                            <span class="badge bg-light text-dark rounded-pill px-3 py-2 ms-2">
+                                                Score: {{ '%.2f'|format(product.overall_score) }} / 5
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        {% if product.status == 'in_progress' %}
+                                            <a href="{{ url_for('fill_questionnaire_section', product_id=product.id, section_idx=0) }}" 
+                                               class="btn btn-primary rounded-pill flex-grow-1">
+                                                <i class="bi bi-play-circle me-2"></i>Continue Assessment
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('product_results', product_id=product.id) }}" 
+                                               class="btn btn-primary rounded-pill flex-grow-1">
+                                                <i class="bi bi-bar-chart me-2"></i>View Results
+                                            </a>
+                                        {% endif %}
+
+                                        {% if product.status == 'completed' %}
+                                            <button class="btn btn-success rounded-pill" disabled>
+                                                <i class="bi bi-check-circle me-2"></i>Assessment Complete
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted mb-3">No Products Yet</h4>
+                        <p class="text-muted mb-4">Get started by creating your first security assessment.</p>
+                        <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-lg rounded-pill">
+                            <i class="bi bi-plus-circle me-2"></i>Create Your First Assessment
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Progress Chart
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    // Sample data - in real implementation, this would come from the backend
+    const chartData = {
+        labels: {% if products %}{{ products|map(attribute='name')|list|tojson|safe }}{% else %}[]{% endif %},
+        datasets: [{
+            label: 'Progress %',
+            data: [],
+            backgroundColor: [
+                'rgba(78, 115, 223, 0.8)',
+                'rgba(28, 200, 138, 0.8)',
+                'rgba(246, 194, 62, 0.8)',
+                'rgba(231, 74, 59, 0.8)',
+                'rgba(133, 135, 150, 0.8)'
+            ],
+            borderColor: [
+                'rgba(78, 115, 223, 1)',
+                'rgba(28, 200, 138, 1)',
+                'rgba(246, 194, 62, 1)',
+                'rgba(231, 74, 59, 1)',
+                'rgba(133, 135, 150, 1)'
+            ],
+            borderWidth: 2
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // View toggle functionality
+    document.getElementById('listView').addEventListener('change', function() {
+        if (this.checked) {
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.className = 'col-12 product-item mb-3';
+            });
+        }
+    });
+
+    document.getElementById('gridView').addEventListener('change', function() {
+        if (this.checked) {
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.className = 'col-lg-6 col-md-6 product-item';
+            });
+        }
+    });
+
+    // Smooth scroll to products section
+    document.querySelector('a[href="#products-section"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('products-section').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+{% endblock %}

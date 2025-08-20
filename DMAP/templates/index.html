@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}ACCORIAN DMAP - Maturity Assessment Platform{% endblock %}
+
+{% block content %}
+<!-- Modern, Centered Landing Page: Maturity Assessment Platform -->
+<section class="hero-section-light" style="background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%); min-height: 92vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="text-center mb-4">
+                    <h1 class="display-3 fw-bold mb-2" style="color: #1e293b; letter-spacing: -2px;">DEVSECOPS MATURITY ASSESSMENT PLATFORM</h1>
+                    <p class="lead mb-3" style="color: #334155; max-width: 700px; margin: 0 auto;">
+                        <span class="fw-bold">ACCORIAN DMAP</span> helps organizations assess, track, and improve their security and process maturity across products and teams.<br>Our platform guides you through structured questionnaires, expert reviews, and actionable roadmaps to achieve higher maturity levels.
+                    </p>
+                </div>
+                    <div class="row g-4 mb-4 justify-content-center">
+                       
+                    <div class="col-12 col-md-6 col-lg-5">
+                        <div class="d-flex align-items-center bg-white shadow-sm rounded-3 p-3 h-100">
+                            <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                            <span class="fw-semibold text-dark">Guided Maturity Assessments</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-5">
+                        <div class="d-flex align-items-center bg-white shadow-sm rounded-3 p-3 h-100">
+                            <i class="bi bi-graph-up-arrow text-primary fs-3 me-3"></i>
+                            <span class="fw-semibold text-dark">Real-time Progress Tracking</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-5">
+                        <div class="d-flex align-items-center bg-white shadow-sm rounded-3 p-3 h-100">
+                            <i class="bi bi-people-fill text-purple fs-3 me-3" style="color: #8b5cf6 !important;"></i>
+                            <span class="fw-semibold text-dark">Collaborative Review & Feedback</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-5">
+                        <div class="d-flex align-items-center bg-white shadow-sm rounded-3 p-3 h-100">
+                            <i class="bi bi-lightbulb-fill text-warning fs-3 me-3"></i>
+                            <span class="fw-semibold text-dark">Actionable Roadmaps for Improvement</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4 mb-2">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-5 shadow">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Get Started / Sign In
+                    </a>
+                </div>
+                <div class="text-center mt-5">
+                    <h5 class="fw-bold mb-2" style="color: #2563eb;">Why Maturity Matters?</h5>
+                    <p class="text-muted mb-0" style="max-width: 650px; margin: 0 auto;">Organizations with higher maturity are more resilient, efficient, and secure. <span class="fw-bold">ACCORIAN DMAP</span> empowers you to benchmark, improve, and showcase your maturity journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

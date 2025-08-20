@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+
+{% block title %}Security Assessment Results - SecureSphere{% endblock %}
+<!-- This template is used for both client and admin views, showing maturity scores (1-5 scale) only -->
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            {% if maturity_score and dimension_scores %}
+            
+            <div class="results-header mb-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold text-dark mb-2">Security Assessment Results</h2>
+                        <p class="text-muted">Comprehensive security maturity analysis for <strong>{{ product.name }}</strong></p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="overall-maturity text-center">
+                                                 <div class="maturity-badge-large level-{{ maturity_score|default(1) }}">
+                             <div class="level-number">{{ maturity_score|default(1) }}</div>
+                                                         <div class="level-text">
+                                 {% set score = maturity_score|default(1) %}
+                                 {% if score == 1 %}
+                                     Initial
+                                 {% elif score == 2 %}
+                                     Developing
+                                 {% elif score == 3 %}
+                                     Defined
+                                 {% elif score == 4 %}
+                                     Managed
+                                 {% elif score == 5 %}
+                                     Optimized
+                                 {% else %}
+                                     Not Assessed
+                                 {% endif %}
+                             </div>
+                        </div>
+                                                 <p class="text-muted mt-2">
+                             {% if score == 1 %}
+                                 Basic security awareness with ad-hoc processes
+                             {% elif score == 2 %}
+                                 Developing security practices with some documentation
+                             {% elif score == 3 %}
+                                 Well-defined security processes documented and followed
+                             {% elif score == 4 %}
+                                 Managed security with metrics and continuous monitoring
+                             {% elif score == 5 %}
+                                 Continuous improvement with optimized security processes
+                             {% else %}
+                                 Complete your assessment to see your maturity level
+                             {% endif %}
+                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circular Heatmap Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-gradient text-white text-center py-3" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-pie-chart me-2"></i>Security Maturity Heatmap
+                            </h5>
+                            <small class="opacity-75">Visual representation of your security posture across all dimensions</small>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="ring-heatmap-container">
+                                <div id="ring-heatmap"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maturity Level Display -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <div class="maturity-level-display p-2" style="background: rgba(0, 123, 255, 0.1); border-radius: 8px;">
+                        <span class="text-muted small" style="font-size: 14px;">
+                            Current Security Maturity: 
+                            <strong class="text-primary" id="maturity-level-text">Level {{ maturity_score }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Dimensions Results - Full Width -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-gradient text-white text-center py-3" style="background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-list-check me-2"></i>Security Dimensions Results
+                            </h5>
+                            <small class="opacity-75">{{ dimension_scores|length }} Main Categories Analyzed</small>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="dimensions-grid">
+                                <div class="row g-4">
+                                    {% for dimension, score in dimension_scores.items() %}
+                                    <div class="col-lg-6 col-md-12">
+                                        {% set score_value = score if score is number else score.average_score if score.average_score is defined else 0 %}
+                                        <div class="dimension-label-item d-flex align-items-center p-4 rounded-3 border shadow-sm" style="background: rgba({{ 76 if score_value >= 4 else (255 if score_value <= 2 else 255) }}, {{ 175 if score_value >= 4 else (193 if score_value >= 3 else 68) }}, {{ 80 if score_value >= 4 else (7 if score_value >= 3 else 68) }}, 0.1); border-color: rgba({{ 76 if score_value >= 4 else (255 if score_value <= 2 else 255) }}, {{ 175 if score_value >= 4 else (193 if score_value >= 3 else 68) }}, {{ 80 if score_value >= 4 else (7 if score_value >= 3 else 68) }}, 0.3) !important;">
+                                            <div class="dimension-color level-{{ score_value|round|int }} me-4 rounded-circle" style="width: 28px; height: 28px; border: 3px solid #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.15);"></div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="dimension-name fw-bold text-dark mb-1" style="font-size: 1.15rem;">{{ dimension }}</h6>
+                                                <div class="text-muted" style="font-size: 0.95rem; font-weight: 500;">
+                                                    {% if score_value >= 4 %}
+                                                        <i class="bi bi-check-circle-fill text-success me-1"></i>Excellent
+                                                    {% elif score_value >= 3 %}
+                                                        <i class="bi bi-exclamation-circle-fill text-warning me-1"></i>Good
+                                                    {% else %}
+                                                        <i class="bi bi-x-circle-fill text-danger me-1"></i>Needs Improvement
+                                                    {% endif %}
+                                                    - Level {{ score_value|round|int }}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="score-display fw-bold text-white px-3 py-2 rounded" style="font-size: 1.3rem; background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">{{ "%.1f"|format(score_value) }}</div>
+                                                <small class="text-muted mt-1 d-block" style="font-weight: 500;">Score</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Roadmap Button -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(111, 66, 193, 0.05) 0%, rgba(90, 50, 163, 0.05) 100%);">
+                        <div class="card-body p-5">
+                            <div class="mb-4">
+                                <i class="bi bi-map display-4 text-primary mb-3"></i>
+                                <h4 class="fw-bold text-dark mb-2">Ready for Your Security Roadmap?</h4>
+                                <p class="text-muted mb-4">Get strategic recommendations and a detailed 12-month improvement plan based on DSOMM framework</p>
+                            </div>
+                            
+                            <a href="{{ url_for('product_roadmap', product_id=product_id, user_id=user_id) }}" 
+                               class="btn btn-lg shadow-lg px-5 py-3" 
+                               style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); border: none; color: white; font-weight: 600;">
+                                <i class="bi bi-arrow-right-circle me-2"></i>View Security Roadmap
+                            </a>
+                            
+                            <div class="mt-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <i class="bi bi-bullseye text-success mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">Sub-Dimension<br>Improvements</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="bi bi-calendar-check text-warning mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">12-Month<br>Strategic Plan</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="bi bi-graph-up-arrow text-info mb-2 fs-4"></i>
+                                                <p class="small text-muted mb-0">DSOMM-Based<br>Recommendations</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+    <div class="alert alert-info text-center">
+        <h4>No Assessment Data Available</h4>
+        <p>Complete your security assessment to view detailed results.</p>
+        <a href="{{ url_for('questionnaire', product_id=product.id) }}" class="btn btn-primary">Start Assessment</a>
+    </div>
+{% endif %}
+
+<style>
+/* Heatmap and Visualization Styles */
+.maturity-badge-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.maturity-badge-large.level-1 { 
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+    color: white;
+}
+.maturity-badge-large.level-2 { 
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+    color: white;
+}
+.maturity-badge-large.level-3 { 
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); 
+    color: white;
+}
+.maturity-badge-large.level-4 { 
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); 
+    color: white;
+}
+.maturity-badge-large.level-5 { 
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); 
+    color: white;
+}
+
+.level-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.level-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* Ring Heatmap Container */
+.ring-heatmap-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#ring-heatmap {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Dimension Grid Styles */
+.dimensions-grid {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.dimension-label-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.dimension-label-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+}
+
+.dimension-color {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 8px;
+    border: 1px solid #ddd;
+}
+
+.dimension-name {
+    font-size: 1rem;
+    color: #1a202c;
+}
+
+/* Color definitions for maturity levels */
+.level-1 { background-color: #ef4444; }
+.level-2 { background-color: #f59e0b; }
+.level-3 { background-color: #eab308; }
+.level-4 { background-color: #84cc16; }
+.level-5 { background-color: #22c55e; }
+</style>
+
+<script>
+// Initialize ring heatmap when page loads
+document.addEventListener("DOMContentLoaded", function() {
+    {% if subdimension_scores %}
+    const subdimensionScores = {{ subdimension_scores|tojson|safe }};
+    console.log('Sub-dimension scores loaded:', subdimensionScores);
+    console.log('Number of sub-dimensions:', Object.keys(subdimensionScores).length);
+    generateRingHeatmap(subdimensionScores);
+    {% else %}
+    console.warn('No subdimension_scores data available');
+    {% endif %}
+});
+
+function generateRingHeatmap(subdimensionScores) {
+    const container = document.getElementById('ring-heatmap');
+    if (!container || !subdimensionScores) return;
+
+    // Clear existing content
+    container.innerHTML = '';
+
+    // Convert subdimension scores to array format
+    const dimensions = Object.entries(subdimensionScores).map(([name, data]) => ({
+        name: name,
+        score: data.average_score || 0
+    }));
+
+    if (dimensions.length === 0) return;
+
+    // Create SVG
+    const width = 450;
+    const height = 450;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const outerRadius = 180;
+    const innerRadius = 60;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+    // Colors for each maturity level
+    const colors = {
+        1: '#ef4444',  // Red
+        2: '#f59e0b',  // Orange
+        3: '#eab308',  // Yellow
+        4: '#84cc16',  // Light Green
+        5: '#22c55e'   // Green
+    };
+
+    // Calculate angle for each dimension
+    const angleStep = (2 * Math.PI) / dimensions.length;
+
+    dimensions.forEach((dim, index) => {
+        const startAngle = index * angleStep - Math.PI / 2;
+        const endAngle = (index + 1) * angleStep - Math.PI / 2;
+        
+        const level = Math.round(dim.score);
+        const color = colors[level] || colors[1];
+        
+        // Create path for ring segment
+        const x1 = centerX + innerRadius * Math.cos(startAngle);
+        const y1 = centerY + innerRadius * Math.sin(startAngle);
+        const x2 = centerX + outerRadius * Math.cos(startAngle);
+        const y2 = centerY + outerRadius * Math.sin(startAngle);
+        const x3 = centerX + outerRadius * Math.cos(endAngle);
+        const y3 = centerY + outerRadius * Math.sin(endAngle);
+        const x4 = centerX + innerRadius * Math.cos(endAngle);
+        const y4 = centerY + innerRadius * Math.sin(endAngle);
+        
+        const largeArcFlag = angleStep > Math.PI ? 1 : 0;
+        
+        const pathData = [
+            `M ${x1} ${y1}`,
+            `L ${x2} ${y2}`,
+            `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x3} ${y3}`,
+            `L ${x4} ${y4}`,
+            `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x1} ${y1}`,
+            'Z'
+        ].join(' ');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', color);
+        path.setAttribute('stroke', '#fff');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('opacity', '0.8');
+        
+        // Add hover effect
+        path.addEventListener('mouseenter', function() {
+            this.setAttribute('opacity', '1');
+            this.setAttribute('stroke-width', '3');
+        });
+        
+        path.addEventListener('mouseleave', function() {
+            this.setAttribute('opacity', '0.8');
+            this.setAttribute('stroke-width', '2');
+        });
+        
+        // Add title for tooltip
+        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        title.textContent = `${dim.name}: ${dim.score.toFixed(1)} (Level ${level})`;
+        path.appendChild(title);
+        
+        svg.appendChild(path);
+        
+        // Add labels
+        const labelRadius = outerRadius + 20;
+        const labelAngle = startAngle + angleStep / 2;
+        const labelX = centerX + labelRadius * Math.cos(labelAngle);
+        const labelY = centerY + labelRadius * Math.sin(labelAngle);
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', labelX);
+        text.setAttribute('y', labelY);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'middle');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('fill', '#374151');
+        text.textContent = dim.name.length > 12 ? dim.name.substring(0, 12) + '...' : dim.name;
+        svg.appendChild(text);
+    });
+
+    // Add center text showing maturity level
+    const avgScore = dimensions.reduce((sum, dim) => sum + dim.score, 0) / dimensions.length;
+    const levelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    levelText.setAttribute('x', centerX);
+    levelText.setAttribute('y', centerY);
+    levelText.setAttribute('text-anchor', 'middle');
+    levelText.setAttribute('dominant-baseline', 'middle');
+    levelText.setAttribute('font-size', '20');
+    levelText.setAttribute('font-weight', 'bold');
+    levelText.setAttribute('fill', '#007bff');
+    levelText.textContent = `Level ${Math.round(avgScore)}`;
+    svg.appendChild(levelText);
+
+    container.appendChild(svg);
+}
+</script>
+{% endblock %}
