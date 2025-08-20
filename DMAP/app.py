@@ -2365,6 +2365,9 @@ def dashboard():
                 except Exception:
                     return default
 
+            # Check if lead review is complete for this product
+            is_review_complete = is_lead_review_complete(product.id, user_id)
+            
             product_info = {
                 'id': safe_val(product.id, int, 0),
                 'name': safe_val(product.name, str, ''),
@@ -2375,7 +2378,8 @@ def dashboard():
                 'overall_maturity_score': safe_val(overall_maturity_score, float, 0.0),
                 'product_unread_comments': safe_val(product_unread_comments, int, 0),
                 'next_section_idx': safe_val(next_section_idx, int, 0),
-                'overall_score': safe_val(overall_maturity_score, float, 0.0)
+                'overall_score': safe_val(overall_maturity_score, float, 0.0),
+                'is_review_complete': safe_val(is_review_complete, bool, False)
             }
             products_with_status.append(product_info)
         # Calculate unread chats and active chats for client
@@ -2637,6 +2641,24 @@ def is_assessment_complete(product_id, user_id):
     ])
     return len(completed_sections) == len(SECTION_IDS)
 
+def is_lead_review_complete(product_id, user_id):
+    """Check if lead review is complete for a product (all questions approved by lead)"""
+    # Get all responses for this product and user
+    responses = QuestionnaireResponse.query.filter_by(
+        product_id=product_id, user_id=user_id
+    ).all()
+    
+    if not responses:
+        return False
+    
+    # Check if all responses are reviewed and approved by lead
+    for response in responses:
+        # Check if response has been reviewed and approved
+        if not response.is_reviewed or response.review_status not in ['approved', 'approved_after_revision']:
+            return False
+    
+    return True
+
 @app.route('/add_product', methods=['GET', 'POST'])
 @login_required('client')
 def add_product():
@@ -2879,6 +2901,13 @@ def product_results(product_id):
         if not is_complete:
             flash('Assessment must be completed before viewing results. Please complete all questionnaire sections first.', 'warning')
             return redirect(url_for('questionnaire', product_id=product_id))
+        
+        # For clients, also check if lead review is complete
+        if role == 'client':
+            is_review_complete = is_lead_review_complete(product_id, target_user_id)
+            if not is_review_complete:
+                flash('Results are not available until the lead has completed the review of all questions.', 'warning')
+                return redirect(url_for('dashboard'))
         resps = QuestionnaireResponse.query.filter_by(product_id=product_id, user_id=target_user_id).all()
         print(f"[DEBUG] Querying responses for product_id={product_id}, user_id={owner_id}")
         print(f"[DEBUG] Number of responses found: {len(resps)}")
@@ -3073,6 +3102,13 @@ def product_roadmap(product_id, user_id):
             flash('Assessment must be completed before viewing roadmap. Please complete all questionnaire sections first.', 'warning')
             return redirect(url_for('questionnaire', product_id=product_id))
         
+        # For clients, also check if lead review is complete
+        if session_role == 'client':
+            is_review_complete = is_lead_review_complete(product_id, user_id)
+            if not is_review_complete:
+                flash('Roadmap is not available until the lead has completed the review of all questions.', 'warning')
+                return redirect(url_for('dashboard'))
+        
         # Calculate scores needed for roadmap
         overall_score, section_data = calculate_overall_maturity_score(product_id, user_id)
         maturity_score = max(1, min(5, round(overall_score))) if overall_score and overall_score > 0 else 1
@@ -3099,6 +3135,9 @@ def product_roadmap(product_id, user_id):
         subdimension_roadmap = generate_subdimension_roadmap(product_id, user_id)
         overall_roadmap = generate_overall_roadmap(product_id, user_id)
         
+        # Check if lead review is complete (for template context)
+        is_review_complete = is_lead_review_complete(product_id, user_id)
+        
         return render_template('roadmap.html', 
                              product=product,
                              user=user,
@@ -3108,7 +3147,9 @@ def product_roadmap(product_id, user_id):
                              dimension_scores=dimension_scores,
                              subdimension_scores=subdimension_scores,
                              subdimension_roadmap=subdimension_roadmap,
-                             overall_roadmap=overall_roadmap)
+                             overall_roadmap=overall_roadmap,
+                             session_role=session_role,
+                             is_review_complete=is_review_complete)
     
     except Exception as e:
         print(f"Error in product_roadmap route: {e}")
