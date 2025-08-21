@@ -201,10 +201,21 @@
     cursor: pointer;
     color: #6c757d;
     transition: color 0.2s;
+    font-size: 14px;
+    margin-left: 8px;
+    display: inline-block;
+    opacity: 1;
 }
 
 .edit-icon:hover {
     color: #007bff;
+    transform: scale(1.1);
+}
+
+.roadmap-item:hover .edit-icon,
+.activity-item:hover .edit-icon {
+    color: #007bff;
+    opacity: 1;
 }
 
 /* Printing adjustments */
@@ -690,9 +701,17 @@
                     <a href="{{ url_for('product_results', product_id=product_id) }}" class="btn btn-outline-secondary me-3">
                         <i class="bi bi-arrow-left me-2"></i>Back to Results
                     </a>
-                    <button class="btn btn-primary" onclick="window.print()">
+                    <button class="btn btn-primary me-3" onclick="window.print()">
                         <i class="bi bi-printer me-2"></i>Print Roadmap
                     </button>
+                    {% if session_role == 'lead' %}
+                    <button id="save-all-changes" class="btn btn-success me-3" style="display: none;">
+                        <i class="bi bi-check-all me-2"></i>Save All Changes
+                    </button>
+                    <button id="reload-roadmap" class="btn btn-info">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Reload Roadmap
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -703,6 +722,7 @@
 // Roadmap editing functionality (Lead only)
 const RoadmapEditor = {
     currentEditingItem: null,
+    modifiedItems: new Set(),
     
     init() {
         // Only initialize if user is lead
@@ -711,53 +731,81 @@ const RoadmapEditor = {
         
         this.addEditButtons();
         this.bindEvents();
+        this.initGlobalButtons();
+    },
+    
+    initGlobalButtons() {
+        // Bind global save and reload buttons
+        const saveAllBtn = document.getElementById('save-all-changes');
+        const reloadBtn = document.getElementById('reload-roadmap');
+        
+        if (saveAllBtn) {
+            saveAllBtn.addEventListener('click', () => this.saveAllChanges());
+        }
+        
+        if (reloadBtn) {
+            reloadBtn.addEventListener('click', () => this.reloadRoadmap());
+        }
     },
     
     addEditButtons() {
         // Add edit buttons to subdimension roadmap items
         document.querySelectorAll('.roadmap-item').forEach((item, index) => {
             const recommendation = item.querySelector('p');
-            if (recommendation) {
+            if (recommendation && !recommendation.querySelector('.edit-icon')) {
                 const editIcon = document.createElement('i');
                 editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
                 editIcon.title = 'Edit recommendation';
                 editIcon.dataset.type = 'subdimension';
                 editIcon.dataset.index = index;
                 
-                const subdimensionTitle = item.querySelector('h6').textContent.trim();
-                editIcon.dataset.key = subdimensionTitle;
-                
-                recommendation.appendChild(editIcon);
-                
-                // Add modified indicator if needed
-                const isModified = item.dataset.modified === 'true';
-                if (isModified) {
-                    const indicator = document.createElement('span');
-                    indicator.className = 'modified-indicator';
-                    indicator.innerHTML = '<i class="bi bi-check-circle"></i> Modified';
-                    recommendation.appendChild(indicator);
+                const subdimensionTitle = item.querySelector('h6');
+                if (subdimensionTitle) {
+                    editIcon.dataset.key = subdimensionTitle.textContent.trim();
+                    
+                    recommendation.appendChild(editIcon);
+                    
+                    // Add modified indicator if needed
+                    const isModified = item.dataset.modified === 'true';
+                    if (isModified) {
+                        const indicator = document.createElement('span');
+                        indicator.className = 'modified-indicator';
+                        indicator.innerHTML = '<i class="bi bi-check-circle"></i> Modified';
+                        recommendation.appendChild(indicator);
+                        this.modifiedItems.add(editIcon.dataset.key);
+                    }
                 }
             }
         });
         
         // Add edit buttons to overall roadmap activities
         document.querySelectorAll('.activity-item').forEach((item, index) => {
-            const editIcon = document.createElement('i');
-            editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
-            editIcon.title = 'Edit activity';
-            editIcon.dataset.type = 'overall';
-            editIcon.dataset.index = index;
-            
-            // Find the phase and subdimension for this activity
-            const phaseRow = item.closest('tr');
-            const phaseText = phaseRow.querySelector('.phase-number h4').textContent.trim();
-            const activityText = item.querySelector('span.text-dark').textContent.trim();
-            const subdimension = activityText.split(':')[0];
-            
-            editIcon.dataset.key = `${phaseText} - ${subdimension}`;
-            
-            item.appendChild(editIcon);
+            if (!item.querySelector('.edit-icon')) {
+                const editIcon = document.createElement('i');
+                editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
+                editIcon.title = 'Edit activity';
+                editIcon.dataset.type = 'overall';
+                editIcon.dataset.index = index;
+                
+                // Find the phase and subdimension for this activity
+                const phaseRow = item.closest('tr');
+                const activityText = item.querySelector('span.text-dark');
+                
+                if (phaseRow && activityText) {
+                    const phaseElement = phaseRow.querySelector('.phase-number h4');
+                    if (phaseElement) {
+                        const phaseText = phaseElement.textContent.trim();
+                        const subdimension = activityText.textContent.trim().split(':')[0];
+                        
+                        editIcon.dataset.key = `${phaseText} - ${subdimension}`;
+                        item.appendChild(editIcon);
+                    }
+                }
+            }
         });
+        
+        // Update global save button based on existing modifications
+        this.updateGlobalSaveButton();
     },
     
     bindEvents() {
@@ -841,8 +889,8 @@ const RoadmapEditor = {
         }
         
         const data = {
-            product_id: {{ product_id }},
-            user_id: {{ user_id }},
+            product_id: {{ product_id|default(0) }},
+            user_id: {{ user_id|default(0) }},
             roadmap_type: editContainer.dataset.type,
             item_key: editContainer.dataset.key,
             recommendation: newText
@@ -866,6 +914,10 @@ const RoadmapEditor = {
                 
                 // Show success message
                 this.showMessage('Roadmap updated successfully', 'success');
+                
+                // Track modified items
+                this.modifiedItems.add(editContainer.dataset.key);
+                this.updateGlobalSaveButton();
             } else {
                 alert('Error: ' + result.error);
             }
@@ -889,8 +941,8 @@ const RoadmapEditor = {
         const editContainer = resetBtn.closest('.edit-mode');
         
         const data = {
-            product_id: {{ product_id }},
-            user_id: {{ user_id }},
+            product_id: {{ product_id|default(0) }},
+            user_id: {{ user_id|default(0) }},
             roadmap_type: editContainer.dataset.type,
             item_key: editContainer.dataset.key
         };
@@ -971,6 +1023,39 @@ const RoadmapEditor = {
                 toast.remove();
             }
         }, 5000);
+    },
+    
+    updateGlobalSaveButton() {
+        const saveAllBtn = document.getElementById('save-all-changes');
+        if (saveAllBtn) {
+            if (this.modifiedItems.size > 0) {
+                saveAllBtn.style.display = 'inline-block';
+                saveAllBtn.innerHTML = `<i class="bi bi-check-all me-2"></i>Save All Changes (${this.modifiedItems.size})`;
+            } else {
+                saveAllBtn.style.display = 'none';
+            }
+        }
+    },
+    
+    async saveAllChanges() {
+        if (this.modifiedItems.size === 0) {
+            this.showMessage('No changes to save', 'info');
+            return;
+        }
+        
+        this.showMessage(`Saving ${this.modifiedItems.size} changes...`, 'info');
+        
+        // Clear the modified items since they're already saved individually
+        this.modifiedItems.clear();
+        this.updateGlobalSaveButton();
+        
+        this.showMessage('All changes have been saved successfully', 'success');
+    },
+    
+    reloadRoadmap() {
+        if (confirm('Reload the roadmap? Any unsaved changes will be lost.')) {
+            location.reload();
+        }
     }
 };
 
