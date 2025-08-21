@@ -2,6 +2,7 @@
 import os
 import csv
 import io
+import json
 import pandas as pd
 import hashlib
 import secrets
@@ -559,6 +560,39 @@ class ChatMessage(db.Model):
 
 # Chat models removed - simplified approval workflow
 
+class RoadmapItem(db.Model):
+    """Editable roadmap items that can be customized by leads"""
+    __tablename__ = 'roadmap_items'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    roadmap_type = db.Column(db.String(20), nullable=False)  # 'subdimension' or 'overall'
+    item_key = db.Column(db.String(200), nullable=False)  # subdimension name or phase identifier
+    phase = db.Column(db.String(50))  # Phase information
+    target_level = db.Column(db.Integer)
+    recommendation = db.Column(db.Text)  # Editable recommendation text
+    focus_areas = db.Column(db.Text)  # JSON string for overall roadmap focus areas
+    activities = db.Column(db.Text)  # JSON string for overall roadmap activities
+    original_recommendation = db.Column(db.Text)  # Store original for reference
+    modified_by = db.Column(db.Integer, db.ForeignKey('users.id'))  # Lead who made changes
+    is_modified = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    
+    # Relationships
+    product = db.relationship('Product', backref='roadmap_items')
+    user = db.relationship('User', foreign_keys=[user_id], backref='user_roadmap_items')
+    modifier = db.relationship('User', foreign_keys=[modified_by], backref='modified_roadmap_items')
+    
+    # Composite index for better performance
+    __table_args__ = (
+        db.Index('idx_roadmap_product_user', 'product_id', 'user_id'),
+        db.Index('idx_roadmap_type_key', 'roadmap_type', 'item_key'),
+    )
+    
+    def __repr__(self):
+        return f'<RoadmapItem {self.roadmap_type}:{self.item_key}>'
 
 
 def allowed_file(filename):
@@ -1465,6 +1499,18 @@ def generate_subdimension_roadmap(product_id, user_id):
         # Get recommendation from DSOMM or default logic
         recommendation = get_dsomm_recommendation(subdim_name, target_level, dsomm_data)
         
+        # Check for custom roadmap item
+        custom_item = RoadmapItem.query.filter_by(
+            product_id=product_id,
+            user_id=user_id,
+            roadmap_type='subdimension',
+            item_key=subdim_name
+        ).first()
+        
+        # Use custom recommendation if available
+        if custom_item and custom_item.is_modified:
+            recommendation = custom_item.recommendation
+        
         # Determine phase based on current level relative to overall level
         if current_level < current_overall_level:
             phase = "Phase 1 (0-3 months)"
@@ -1485,7 +1531,8 @@ def generate_subdimension_roadmap(product_id, user_id):
             'questions_count': data['question_count'],
             'improvement_gap': target_level - current_level,
             'phase': phase,
-            'phase_priority': phase_priority
+            'phase_priority': phase_priority,
+            'is_modified': custom_item.is_modified if custom_item else False
         }
         
         roadmap.append(roadmap_item)
@@ -1546,6 +1593,18 @@ def generate_overall_roadmap(product_id, user_id):
             
             # Get recommendation for bringing this subdimension to current level
             recommendation = get_dsomm_recommendation(subdim, current_level, dsomm_data)
+            
+            # Check for custom roadmap item
+            custom_item = RoadmapItem.query.filter_by(
+                product_id=product_id,
+                user_id=user_id,
+                roadmap_type='overall',
+                item_key=f"Phase 1 - {subdim}"
+            ).first()
+            
+            if custom_item and custom_item.is_modified:
+                recommendation = custom_item.recommendation
+            
             recommendations_phase1.append(f"{subdim}: {recommendation}")
         
         roadmap.append({
@@ -1574,6 +1633,18 @@ def generate_overall_roadmap(product_id, user_id):
             
             # Get recommendation for advancing to next level
             recommendation = get_dsomm_recommendation(subdim_name, next_level, dsomm_data)
+            
+            # Check for custom roadmap item
+            custom_item = RoadmapItem.query.filter_by(
+                product_id=product_id,
+                user_id=user_id,
+                roadmap_type='overall',
+                item_key=f"Phase 2 - {subdim_name}"
+            ).first()
+            
+            if custom_item and custom_item.is_modified:
+                recommendation = custom_item.recommendation
+            
             recommendations_phase2.append(f"{subdim_name}: {recommendation}")
         
         roadmap.append({
@@ -1601,6 +1672,18 @@ def generate_overall_roadmap(product_id, user_id):
             
             # Get recommendation for achieving Level 5
             recommendation = get_dsomm_recommendation(subdim_name, 5, dsomm_data)
+            
+            # Check for custom roadmap item
+            custom_item = RoadmapItem.query.filter_by(
+                product_id=product_id,
+                user_id=user_id,
+                roadmap_type='overall',
+                item_key=f"Phase 3 - {subdim_name}"
+            ).first()
+            
+            if custom_item and custom_item.is_modified:
+                recommendation = custom_item.recommendation
+            
             recommendations_phase3.append(f"{subdim_name}: {recommendation}")
         
         roadmap.append({
@@ -3217,6 +3300,131 @@ def admin_product_roadmap(product_id):
         print(f"Error in admin_product_roadmap route: {e}")
         flash('An error occurred while loading roadmap.', 'error')
         return redirect(url_for('manage_clients'))
+
+@app.route('/api/roadmap/update', methods=['POST'])
+@login_required()
+def update_roadmap_item():
+    """Update a roadmap item (lead only)"""
+    try:
+        # Check if user is lead
+        if session.get('role') != 'lead':
+            return jsonify({'success': False, 'error': 'Access denied. Lead role required.'}), 403
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        product_id = data.get('product_id')
+        user_id = data.get('user_id')
+        roadmap_type = data.get('roadmap_type')
+        item_key = data.get('item_key')
+        recommendation = data.get('recommendation')
+        focus_areas = data.get('focus_areas')
+        activities = data.get('activities')
+        
+        if not all([product_id, user_id, roadmap_type, item_key]):
+            return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+        
+        # Verify lead has access to this product
+        product = Product.query.get_or_404(product_id)
+        owner = User.query.get(product.owner_id)
+        lead_id = session.get('user_id')
+        
+        if not owner or not any(l.id == lead_id for l in owner.assigned_to_leads):
+            return jsonify({'success': False, 'error': 'Access denied to this product'}), 403
+        
+        # Find or create roadmap item
+        roadmap_item = RoadmapItem.query.filter_by(
+            product_id=product_id,
+            user_id=user_id,
+            roadmap_type=roadmap_type,
+            item_key=item_key
+        ).first()
+        
+        if not roadmap_item:
+            # Create new roadmap item
+            roadmap_item = RoadmapItem(
+                product_id=product_id,
+                user_id=user_id,
+                roadmap_type=roadmap_type,
+                item_key=item_key,
+                original_recommendation=recommendation
+            )
+            db.session.add(roadmap_item)
+        
+        # Update the item
+        roadmap_item.recommendation = recommendation
+        if focus_areas:
+            roadmap_item.focus_areas = json.dumps(focus_areas) if isinstance(focus_areas, list) else focus_areas
+        if activities:
+            roadmap_item.activities = json.dumps(activities) if isinstance(activities, list) else activities
+        roadmap_item.modified_by = lead_id
+        roadmap_item.is_modified = True
+        roadmap_item.updated_at = datetime.now(timezone.utc)
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Roadmap item updated successfully',
+            'item_id': roadmap_item.id
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating roadmap item: {e}")
+        return jsonify({'success': False, 'error': 'Internal server error'}), 500
+
+@app.route('/api/roadmap/reset', methods=['POST'])
+@login_required()
+def reset_roadmap_item():
+    """Reset a roadmap item to original (lead only)"""
+    try:
+        # Check if user is lead
+        if session.get('role') != 'lead':
+            return jsonify({'success': False, 'error': 'Access denied. Lead role required.'}), 403
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        product_id = data.get('product_id')
+        user_id = data.get('user_id')
+        roadmap_type = data.get('roadmap_type')
+        item_key = data.get('item_key')
+        
+        if not all([product_id, user_id, roadmap_type, item_key]):
+            return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+        
+        # Verify lead has access to this product
+        product = Product.query.get_or_404(product_id)
+        owner = User.query.get(product.owner_id)
+        lead_id = session.get('user_id')
+        
+        if not owner or not any(l.id == lead_id for l in owner.assigned_to_leads):
+            return jsonify({'success': False, 'error': 'Access denied to this product'}), 403
+        
+        # Find and delete the roadmap item (this will revert to original)
+        roadmap_item = RoadmapItem.query.filter_by(
+            product_id=product_id,
+            user_id=user_id,
+            roadmap_type=roadmap_type,
+            item_key=item_key
+        ).first()
+        
+        if roadmap_item:
+            db.session.delete(roadmap_item)
+            db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Roadmap item reset to original'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error resetting roadmap item: {e}")
+        return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 @app.route('/product/<int:product_id>/export_pdf')
 @login_required()

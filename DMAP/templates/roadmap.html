@@ -162,9 +162,54 @@
     }
 }
 
+/* Edit mode styles */
+.edit-mode {
+    background-color: #fff3cd !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 5px;
+}
+
+.edit-textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.edit-controls {
+    margin-top: 8px;
+    display: flex;
+    gap: 5px;
+}
+
+.edit-controls .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.modified-indicator {
+    color: #28a745;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.edit-icon {
+    cursor: pointer;
+    color: #6c757d;
+    transition: color 0.2s;
+}
+
+.edit-icon:hover {
+    color: #007bff;
+}
+
 /* Printing adjustments */
 @media print {
-    .btn, .breadcrumb, nav {
+    .btn, .breadcrumb, nav, .edit-controls, .edit-icon {
         display: none !important;
     }
     .card {
@@ -183,6 +228,10 @@
     .activity-item {
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
+    }
+    .edit-mode {
+        background-color: transparent !important;
+        border: none !important;
     }
 }
 </style>
@@ -261,7 +310,7 @@
                                                     {% set phase_1_items = subdimension_roadmap | selectattr('phase', 'equalto', 'Phase 1 (0-3 months)') | list %}
                                                     {% if phase_1_items %}
                                                         {% for item in phase_1_items %}
-                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(220, 53, 69, 0.1);">
+                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(220, 53, 69, 0.1);" data-modified="{{ item.is_modified|default(false)|lower }}">
                                                             <div class="d-flex justify-content-between align-items-start">
                                                                 <h6 class="fw-bold text-dark mb-1 small">{{ item.subdimension }}</h6>
                                                                 <div class="text-end">
@@ -290,7 +339,7 @@
                                                     {% set phase_2_items = subdimension_roadmap | selectattr('phase', 'equalto', 'Phase 2 (3-6 months)') | list %}
                                                     {% if phase_2_items %}
                                                         {% for item in phase_2_items %}
-                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(255, 193, 7, 0.1);">
+                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(255, 193, 7, 0.1);" data-modified="{{ item.is_modified|default(false)|lower }}">
                                                             <div class="d-flex justify-content-between align-items-start">
                                                                 <h6 class="fw-bold text-dark mb-1 small">{{ item.subdimension }}</h6>
                                                                 <div class="text-end">
@@ -319,7 +368,7 @@
                                                     {% set phase_3_items = subdimension_roadmap | selectattr('phase', 'equalto', 'Phase 3 (6-12 months)') | list %}
                                                     {% if phase_3_items %}
                                                         {% for item in phase_3_items %}
-                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(13, 202, 240, 0.1);">
+                                                        <div class="roadmap-item border rounded-3 p-2 mb-2" style="background: rgba(13, 202, 240, 0.1);" data-modified="{{ item.is_modified|default(false)|lower }}">
                                                             <div class="d-flex justify-content-between align-items-start">
                                                                 <h6 class="fw-bold text-dark mb-1 small">{{ item.subdimension }}</h6>
                                                                 <div class="text-end">
@@ -353,7 +402,7 @@
                                             <div class="row g-3">
                                                 {% for item in maintenance_items %}
                                                 <div class="col-lg-6">
-                                                    <div class="roadmap-item border rounded-3 p-3" style="background: rgba(25, 135, 84, 0.1);">
+                                                    <div class="roadmap-item border rounded-3 p-3" style="background: rgba(25, 135, 84, 0.1);" data-modified="{{ item.is_modified|default(false)|lower }}">
                                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                                             <h6 class="fw-bold text-dark mb-1">{{ item.subdimension }}</h6>
                                                             <span class="badge bg-success">Level {{ item.current_level }}</span>
@@ -649,4 +698,286 @@
         </div>
     </div>
 </div>
+
+<script>
+// Roadmap editing functionality (Lead only)
+const RoadmapEditor = {
+    currentEditingItem: null,
+    
+    init() {
+        // Only initialize if user is lead
+        const userRole = '{{ session_role }}';
+        if (userRole !== 'lead') return;
+        
+        this.addEditButtons();
+        this.bindEvents();
+    },
+    
+    addEditButtons() {
+        // Add edit buttons to subdimension roadmap items
+        document.querySelectorAll('.roadmap-item').forEach((item, index) => {
+            const recommendation = item.querySelector('p');
+            if (recommendation) {
+                const editIcon = document.createElement('i');
+                editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
+                editIcon.title = 'Edit recommendation';
+                editIcon.dataset.type = 'subdimension';
+                editIcon.dataset.index = index;
+                
+                const subdimensionTitle = item.querySelector('h6').textContent.trim();
+                editIcon.dataset.key = subdimensionTitle;
+                
+                recommendation.appendChild(editIcon);
+                
+                // Add modified indicator if needed
+                const isModified = item.dataset.modified === 'true';
+                if (isModified) {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'modified-indicator';
+                    indicator.innerHTML = '<i class="bi bi-check-circle"></i> Modified';
+                    recommendation.appendChild(indicator);
+                }
+            }
+        });
+        
+        // Add edit buttons to overall roadmap activities
+        document.querySelectorAll('.activity-item').forEach((item, index) => {
+            const editIcon = document.createElement('i');
+            editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
+            editIcon.title = 'Edit activity';
+            editIcon.dataset.type = 'overall';
+            editIcon.dataset.index = index;
+            
+            // Find the phase and subdimension for this activity
+            const phaseRow = item.closest('tr');
+            const phaseText = phaseRow.querySelector('.phase-number h4').textContent.trim();
+            const activityText = item.querySelector('span.text-dark').textContent.trim();
+            const subdimension = activityText.split(':')[0];
+            
+            editIcon.dataset.key = `${phaseText} - ${subdimension}`;
+            
+            item.appendChild(editIcon);
+        });
+    },
+    
+    bindEvents() {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-icon')) {
+                this.startEdit(e.target);
+            } else if (e.target.classList.contains('save-btn')) {
+                this.saveEdit(e.target);
+            } else if (e.target.classList.contains('cancel-btn')) {
+                this.cancelEdit(e.target);
+            } else if (e.target.classList.contains('reset-btn')) {
+                this.resetToOriginal(e.target);
+            }
+        });
+    },
+    
+    startEdit(editIcon) {
+        if (this.currentEditingItem) {
+            this.cancelEdit(this.currentEditingItem.querySelector('.cancel-btn'));
+        }
+        
+        const container = editIcon.closest('.roadmap-item, .activity-item');
+        const textElement = editIcon.dataset.type === 'subdimension' 
+            ? container.querySelector('p') 
+            : container.querySelector('span.text-dark');
+        
+        const currentText = textElement.textContent.trim();
+        const cleanText = editIcon.dataset.type === 'subdimension' 
+            ? currentText.replace(/\s*✏️.*$/, '').replace(/\s*✓ Modified.*$/, '').trim()
+            : currentText;
+        
+        // Create edit interface
+        const editContainer = document.createElement('div');
+        editContainer.className = 'edit-mode p-2';
+        
+        const textarea = document.createElement('textarea');
+        textarea.className = 'edit-textarea';
+        textarea.value = cleanText;
+        
+        const controls = document.createElement('div');
+        controls.className = 'edit-controls';
+        
+        controls.innerHTML = `
+            <button type="button" class="btn btn-success btn-sm save-btn">
+                <i class="bi bi-check"></i> Save
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm cancel-btn">
+                <i class="bi bi-x"></i> Cancel
+            </button>
+            <button type="button" class="btn btn-warning btn-sm reset-btn">
+                <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+        `;
+        
+        editContainer.appendChild(textarea);
+        editContainer.appendChild(controls);
+        
+        // Store original data
+        editContainer.dataset.originalText = cleanText;
+        editContainer.dataset.type = editIcon.dataset.type;
+        editContainer.dataset.key = editIcon.dataset.key;
+        editContainer.dataset.index = editIcon.dataset.index;
+        
+        // Replace content with edit interface
+        const parent = textElement.parentNode;
+        parent.style.display = 'none';
+        container.appendChild(editContainer);
+        
+        this.currentEditingItem = editContainer;
+        textarea.focus();
+    },
+    
+    async saveEdit(saveBtn) {
+        const editContainer = saveBtn.closest('.edit-mode');
+        const textarea = editContainer.querySelector('.edit-textarea');
+        const newText = textarea.value.trim();
+        
+        if (!newText) {
+            alert('Recommendation cannot be empty');
+            return;
+        }
+        
+        const data = {
+            product_id: {{ product_id }},
+            user_id: {{ user_id }},
+            roadmap_type: editContainer.dataset.type,
+            item_key: editContainer.dataset.key,
+            recommendation: newText
+        };
+        
+        try {
+            const response = await fetch('/api/roadmap/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Update the display
+                this.updateDisplay(editContainer, newText, true);
+                this.currentEditingItem = null;
+                
+                // Show success message
+                this.showMessage('Roadmap updated successfully', 'success');
+            } else {
+                alert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            alert('Failed to save changes');
+        }
+    },
+    
+    cancelEdit(cancelBtn) {
+        const editContainer = cancelBtn.closest('.edit-mode');
+        const originalText = editContainer.dataset.originalText;
+        
+        this.updateDisplay(editContainer, originalText, false);
+        this.currentEditingItem = null;
+    },
+    
+    async resetToOriginal(resetBtn) {
+        if (!confirm('Reset this item to its original recommendation?')) return;
+        
+        const editContainer = resetBtn.closest('.edit-mode');
+        
+        const data = {
+            product_id: {{ product_id }},
+            user_id: {{ user_id }},
+            roadmap_type: editContainer.dataset.type,
+            item_key: editContainer.dataset.key
+        };
+        
+        try {
+            const response = await fetch('/api/roadmap/reset', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Reload the page to show original content
+                location.reload();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Reset error:', error);
+            alert('Failed to reset item');
+        }
+    },
+    
+    updateDisplay(editContainer, text, isModified) {
+        const container = editContainer.parentNode;
+        const originalElement = container.querySelector('p, span.text-dark');
+        
+        // Remove edit interface
+        editContainer.remove();
+        
+        // Show original element
+        originalElement.parentNode.style.display = '';
+        
+        // Update text content
+        const textNode = originalElement.childNodes[0];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+            textNode.textContent = text;
+        } else {
+            originalElement.textContent = text;
+        }
+        
+        // Re-add edit icon and modified indicator
+        const editIcon = document.createElement('i');
+        editIcon.className = 'bi bi-pencil-square edit-icon ms-2';
+        editIcon.title = 'Edit recommendation';
+        editIcon.dataset.type = editContainer.dataset.type;
+        editIcon.dataset.key = editContainer.dataset.key;
+        editIcon.dataset.index = editContainer.dataset.index;
+        originalElement.appendChild(editIcon);
+        
+        if (isModified) {
+            const indicator = document.createElement('span');
+            indicator.className = 'modified-indicator';
+            indicator.innerHTML = '<i class="bi bi-check-circle"></i> Modified';
+            originalElement.appendChild(indicator);
+        }
+    },
+    
+    showMessage(message, type) {
+        // Create and show a toast message
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        toast.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+};
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    RoadmapEditor.init();
+});
+</script>
+
 {% endblock %}
